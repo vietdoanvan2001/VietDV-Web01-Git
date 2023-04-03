@@ -1,0 +1,118 @@
+.detail-combobox__container{
+    position: relative;
+    /* padding: 0 10px 0 10px; */
+    border: 1px solid var(--input-border-color);
+    height: 36px;
+    border-radius: 3px;
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 14px;
+}
+
+.detail-combobox__selectField{
+    position: absolute;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #babec5;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 -8px 34px 0 rgb(0 0 0 / 5%);
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 2;
+}
+
+.w-30{
+    width: 30%;
+    height: 28px;
+    padding: 0 10px!important;
+    border: none;
+}
+
+.w-70{
+    width: 70%;
+    height: 28px;
+    padding: 0 10px!important;
+    border: none;
+}
+
+.item--title{
+    font-weight: 700;
+    font-size: 12px;
+    background-color: #eceef1;
+}
+
+.item--data{
+    /* font-weight: 700; */
+    font-size: 14px;
+}
+
+.item-row:hover td{
+    background-color: #e8e9ec !important;
+    color: #2ca01c;
+}
+
+.item-row__active td{
+    color: #fff !important;
+    background-color: #2ca01c !important;
+}
+
+.item-row__active:hover td{
+    color: #fff !important;
+    background-color: #2ca01c !important;
+}
+
+.detail-combobox__selectField--table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-combobox__selectField--item{
+    height: 28px;
+    padding: 0 10px!important;
+    border: none;
+}
+
+.detail-combobox__input{
+    width: calc(100% - 38px);
+    height: 34px;
+    border-radius: 3px;
+    padding-left: 10px;
+    margin: 0 !important;
+    border: none;
+    outline: none;
+}
+.detail-combobox__button{
+    width: 38px;
+    height: 34px;
+    cursor: pointer;
+}
+
+.detail-combobox__button:hover{
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
+}
+
+.detail-combobox__searchField{
+    display: flex;
+}
+
+.combobox-icon{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -371px -364px;
+	width: 10px;
+	height: 8px;
+    margin-top: calc((34px - 8px)/2);
+    margin-left: calc((38px - 10px)/2);
+    transform: rotate(0deg);
+    transition: 0.3s;
+}
+
+.combobox-icon-up{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -371px -364px;
+	width: 10px;
+	height: 8px;
+    margin-top: 13px;
+    margin-left: 14px;
+    transform: rotate(180deg);
+    transition: 0.3s;
+}

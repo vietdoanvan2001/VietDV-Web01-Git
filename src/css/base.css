@@ -1,0 +1,32 @@
+:root{
+    /* button */
+    --primary-btn-background-color: #50b83c;
+    --primary-btn--hover-background-color: #35bf22;
+    --primary-btn--active-background-color: #2ca01c;
+    --primary-btn--focus-background-color: #2ca01c;
+    --sub-btn-background-color: #babec5;
+    --sub-btn--hover-background-color: #d2d3d6;
+    --sub-btn--active-background-color: #bbbcbc;
+    --sub-btn--focus-background-color: #bbbcbc;
+    --sub-btn--border-coler: #babec5;
+
+    /* input */
+    --input-border-color:#babec5;
+    --input-background-color:#FFFFFF;
+    --input-border-color-hover:#babec5;
+    --input-background-color-hover:#F6F6F6;
+    --input-border-color-focus:#50B83C;
+    --input-border-color-warning:#E61D1D;
+
+}
+
+@font-face {
+    font-family: Notosans;
+    src: url(../assets/fonts/notosans-regular.2cb88a13.woff2);
+}
+
+@font-face {
+    font-family: Notosans-bold;
+    src: url(../assets/fonts/notosans-bold.3ede5aff.woff2);
+}
+

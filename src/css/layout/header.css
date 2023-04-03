@@ -1,0 +1,98 @@
+.header{
+    background-color: #fff;
+    height: 56px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-left,
+.header-right{
+    line-height: 56px;
+    height: 100%;
+    display: flex;
+}
+
+.header-icon{
+	width: 24px;
+	height: 24px;
+    margin: 16px 16px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.header-icon-mini{
+    width: 14px;
+	height: 14px;
+    margin: 21px 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.menu-toggle-icon{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -843px -30px;
+}
+
+.header-select{
+    display: flex;
+}
+
+.header-select-name{
+    /* margin-left: 10px; */
+    font-family: Notosans-bold;
+    font-size: 14px;
+    /* max-width: 200px; */
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.header-select-icon{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -1129px -362px;
+}
+
+
+.right-icon{
+    width: 44px;
+    height: 48px;
+    cursor: pointer;
+}
+
+/* .right-icon:hover{
+    background-color: #000;
+} */
+
+.header-notifi-icon{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -788px -30px;
+}
+
+/* .right-icon:hover .header-notifi-icon{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -257px -88px;
+} */
+
+.header-user{
+    display: flex;
+}
+
+.header-user-avatar{
+    width: 32px;
+    height: 32px;
+    margin-top: 12px;
+    margin-left: 26px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -353px -894px;
+}
+
+.header-user-name{
+    margin-left: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    max-width: 200px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.header-user-select{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -1078px -32px;   
+}

@@ -1,0 +1,102 @@
+/* icon input */
+.search-input{
+    height: 26px;
+    border-radius: 2px;
+    width: 200px;
+    display: flex;
+    position: relative;
+    margin-top: 11px;
+    margin-right: 24px;
+    font-size: 14px;
+}
+
+.inputField{
+    padding: 0 10px 0 10px;
+    border: 1px solid var(--input-border-color);
+    height: 36px;
+    border-radius: 3px;
+    width: 100%;
+}
+
+.inputField::placeholder{
+    font-style: italic;
+    opacity: 0.7;
+    font-size: 12px;
+}
+
+.inputField:hover{
+    /* box-shadow: 0 0 0 1px #dadada; */
+    border-color: var(--input-border-color-hover);
+    background-color: var(--input-background-color-hover);
+}
+
+.inputIcon{
+    position: absolute;
+    right: 0;
+    background: url('../../assets/img/Sprites.1d08185e.svg') no-repeat -986px -350px;
+	width: 36px;
+	height: 36px;
+    cursor: pointer;
+}
+
+.inputField:focus {
+    border: 1px solid var(--input-border-color-focus);
+    box-shadow: none;
+}
+
+/* check box */
+input[type="checkbox"]:checked {
+    box-shadow: 0 0 0 1px #2ca01c;
+    border-width: 0.2rem;
+    transform: rotate(90deg);
+  }
+  
+  input[type="checkbox"]:checked::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    z-index: -1;
+    background: url(../../assets/img/Sprites.1d08185e.svg) no-repeat -1220px -357px;
+    transform: rotate(-90deg);
+  }
+  
+  input[type="checkbox"] {
+    height: 16px;
+    width: 16px;
+    border-radius: 2px;
+    vertical-align: middle;
+    appearance: none;
+    border: 0.2rem solid #fff;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px #bbbbbb;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+
+/* radio   */
+
+input[type="radio"] {
+  cursor: pointer;
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    -webkit-appearance: none;
+    border: 0.2rem solid #fff;
+    background-color: #e8e8e8;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px #bbbbbb;
+  }
+  
+  input[type="radio"]:focus-visible,
+  input[type="checkbox"]:focus-visible {
+    outline-offset: 0;
+  }
+  
+  input[type="radio"]:checked {
+    box-shadow: 0 0 0 1px #2ca01c;
+    background-color: #2ca01c;
+    border-width: 0.2rem;
+  }

@@ -1,0 +1,38 @@
+@import url(../css/base.css);
+@import url(../css/layout/content.css);
+@import url(../css/layout/header.css);
+@import url(../css/layout/menu.css);
+@import url(../css/components/button.css);
+@import url(../css/components/sub-button.css);
+@import url(../css/components/dialog-button.css);
+@import url(../css/components/sub-dialog-button.css);
+@import url(../css/components/input.css);
+@import url(../css/components/table.css);
+@import url(../css/views/employee-list.css);
+@import url(../css/components/paging.css);
+@import url(../css/views/employee-detail.css);
+@import url(../css/components/popup.css);
+@import url(../css/components/toast.css);
+@import url(../css/components/combobox.css);
+@import url(../css/components/detail-combobox.css);
+
+* {
+    font-family: 'Notosans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.layout-right{
+    float: right;
+    width: calc( 100% - 200px);
+    height: 100vh;
+}
+
+.layout-left{
+    float: left;
+    width: 200px;
+    height: 100vh;
+}

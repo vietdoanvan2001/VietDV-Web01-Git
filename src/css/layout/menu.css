@@ -1,0 +1,228 @@
+.menu{
+    height: 100vh;
+    width: 100%;
+    background-color: #393a3d;
+    /* overflow: scroll; */
+    padding-top: 56px;
+}
+
+.menu-up{
+    width: 200px;
+    display: flex;
+    height: 56px;
+    padding-left: 20px;
+    align-items: center;
+    position: fixed;
+    background-color: #393a3d;
+    top: 0;
+    left: 0;
+
+}
+
+.menu-up-option{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -424px -86px;
+	width: 24px;
+	height: 24px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.menu-up-logo{
+    width: 96px;
+    height: 32px;
+    cursor: pointer;
+    background-position: center;
+}
+
+.menu-down-head{
+    text-align: center;
+    padding-left: 26px;
+}
+
+.menu-down-head__content{
+    height: 28px;
+    margin: 8px 0 13px 0;
+    justify-content: center;
+    display: flex;
+    border-radius: 30px;
+    border: 2px solid #d4d7dc;
+    width: 126px;
+}
+
+.menu-down-head__content:hover{
+    box-shadow: 0 0 0 2pt #606370;
+    cursor: pointer;
+}
+
+.menu-down-head__text{
+    font-size: 14px;
+    font-weight: 600;
+    color: #d4d7dc;
+    margin-top: 3.5px;
+}
+
+.menu-down-head__icon{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -34px -314px;
+	width: 12px;
+	height: 12px;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.menu-down-body{
+    padding-top: 20px;
+}
+
+.menu-items{
+    text-decoration: none;
+    height: 44px;
+    line-height: 44px;
+    padding-left: 6px;
+    padding-right: 12px;
+    color: #fff;
+    display: flex;
+    border-left: 6px solid transparent;
+    overflow: hidden;
+    /* margin-bottom: 4px; */
+}
+
+.menu-items:hover{
+    background: hsla(0,0%,100%,.2);
+}
+
+.router-link-active{
+    border-left: 6px solid #2ca01c;
+    font-weight: 700;
+    background-color: #d4d7dc2c;
+}
+
+.menu__icon{
+    background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat;
+	width: 24px;
+	height: 24px;
+    margin:10px 12px;
+}
+
+.menu__text{
+    font-size: 14px;
+    font-family: Notosans;
+}
+
+.dashboard_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -30px -1628px!important;
+}
+
+.cash_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -73px -1628px!important;
+}
+
+.deposit_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -117px -1628px!important;
+}
+
+.buy_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -161px -1628px!important;
+}
+
+.sell_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -204px -1628px!important;
+}
+
+.bill_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -249px -1628px!important;
+}
+
+.warehouse_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -291px -1628px!important;
+}
+
+.tool_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -336px -1628px!important;
+}
+
+.static_asset_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -378px -1630px!important;
+}
+
+.salary_icon{
+    background: url(../../assets/img/Sprites.1d08185e.svg) no-repeat -467px -1659px!important;
+}
+
+.tax_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -423px -1630px!important;
+}
+.price_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -467px -1628px!important;
+}
+.summary_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -510px -1628px!important;
+}
+.budget_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -378px -1659px!important;
+}
+.report_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -547px -1628px!important;
+}
+.analyze_icon{
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -204px -1664px!important;
+}
+
+.dashboard_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -29px -1585px!important;
+}
+
+.cash_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -73px -1586px!important;
+}
+
+.deposit_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -117px -1587px!important;
+}
+
+.buy_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -161px -1588px!important;
+}
+
+.sell_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -206px -1585px!important;
+}
+
+.bill_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -249px -1586px!important;
+}
+
+.warehouse_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -291px -1587px!important;
+}
+
+.tool_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -336px -1587px!important;
+}
+
+.static_asset_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -380px -1587px!important;
+}
+
+.salary_icon__active {
+    background: url(../../assets/img/Sprites.1d08185e.svg) no-repeat -513px -1663px!important;
+}
+
+.tax_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -425px -1588px!important;
+}
+.price_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -470px -1587px!important;
+}
+.summary_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -514px -1586px!important;
+}
+.budget_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -426px -1659px!important;
+}
+.report_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -552px -1588px!important;
+}
+.analyze_icon__active {
+    background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -251px -1663px!important;
+}
+

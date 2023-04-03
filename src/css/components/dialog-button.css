@@ -1,0 +1,24 @@
+.dialogButton{
+    border-radius: 4px;
+    border: 1px solid transparent;
+    color: #fff;
+    background-color: var(--primary-btn-background-color);
+    height: 36px;
+    min-width: 80px;
+    padding: 0 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.table-btn{
+    margin-top: 18px;
+}
+
+.dialogButton:hover{
+    background-color: var(--primary-btn--hover-background-color);
+}
+
+.dialogButton:active{
+    background-color: var(--primary-btn--active-background-color);
+}

@@ -1,0 +1,233 @@
+.container {
+  background-color: #eceef1;
+  height: calc(100vh - 56px);
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 44px;
+  /* padding-bottom: 8px; */
+}
+
+.content-head {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  top: 56px;
+  /* height: 92px; */
+  background-color: #eceef1;
+  width: calc(100% - 200px);
+  left: 200px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.content-title {
+  font-size: 24px;
+  font-weight: 700;
+  padding: 20px 0 19px 0;
+  font-family: Notosans-bold;
+  /* position: fixed; */
+}
+
+.content-backAll {
+  padding-bottom: 12px;
+  display: flex;
+}
+
+.backAll-icon {
+  background: url(../../assets/img/Sprites.1d08185e.svg) no-repeat -224px -360px;
+  width: 16px;
+  height: 16px;
+}
+
+.backAll-text {
+  cursor: pointer;
+  color: #0075c0;
+  font-size: 14px;
+}
+
+.content-body {
+  /* width: 100%; */
+  background-color: #fff;
+  margin-top: 89px;
+  height: calc(100vh - 189px);
+  overflow-x: scroll;
+  overflow-y: scroll;
+  overflow: scroll;
+}
+
+.content-option {
+  position: fixed;
+  top: 128px;
+  width: calc(100% - 240px);
+  height: 60px;
+  /* display: flex;
+  justify-content: space-between; */
+  background: #fff;
+}
+
+.content-left_btn {
+  width: 180px;
+  border-radius: 4px;
+  border: 1px solid #000;
+  font-weight: 400;
+  padding-top: 2px;
+  opacity: 0.4;
+  height: 26px;
+  margin: 0;
+}
+
+.content-option__right {
+  display: flex;
+  float: right;
+}
+
+.content_search-input {
+  position: relative;
+  display: flex;
+  justify-content: end;
+  width: 200px;
+  margin-right: 6px;
+  padding-top: 12px;
+}
+
+.content_search-input .inputField {
+  width: 280px;
+  height: 36px;
+  border-radius: 4px;
+  /* position: relative; */
+}
+
+/* .content_search-input .inputField:focus {
+  width: 200px;
+  transition: 0.5s;
+} */
+
+.content_setting-icon {
+  background: url(../../assets/img/Sprites.1d08185e.svg) no-repeat -88px -200px;
+  width: 24px;
+  height: 24px;
+}
+
+.content_setting-icon:hover {
+  background-position: -88px -256px;
+  cursor: pointer;
+}
+
+.content_excel-icon {
+  background: url(../../assets/img/Sprites.1d08185e.svg) no-repeat -704px -200px;
+  width: 24px;
+  height: 24px;
+}
+
+.content_excel-icon:hover {
+  background-position: -704px -256px;
+  cursor: pointer;
+}
+
+.content_refresh-icon {
+  background: url(../../assets/img/Sprites.1d08185e.svg) no-repeat -425px -201px;
+  width: 24px;
+  height: 24px;
+  margin-top: 6px;
+}
+
+.last-content-icon{
+  margin-right: 20px;
+}
+
+.content_export-icon {
+  background: url(../../assets/img/Sprites.1d08185e.svg) no-repeat -705px -201px;
+  width: 24px;
+  height: 24px;
+  margin-top: 6px;
+}
+
+.content_export-icon:hover {
+  background-position: -1265px -89px;
+  cursor: pointer;
+}
+
+.content_refresh-icon:hover {
+  background-position: -1098px -89px;
+  cursor: pointer;
+}
+
+.content-icon {
+  /* margin-right: 20px; */
+  width: 24px;
+  height: 36px;
+  margin-left: 12px;
+  margin-top: 12px;
+}
+
+.container .table .table-title {
+  position: sticky;
+  top: 0px;
+  z-index: 10;
+}
+
+.container .table .first-column {
+  position: sticky;
+  left: 0px;
+  background-color: #fff;
+  z-index: 2;
+}
+
+.first-column-1 {
+  position: sticky;
+  left: 0px;
+  top: 0px;
+  z-index: 5;
+}
+
+.last-column{
+  position: sticky;
+  right: 0px;
+  background-color: #fff;
+  z-index: 2;
+  border-left: 1px dotted #c7c7c7;
+}
+
+.last-column-1{
+    background-color: #e5e8ec;
+    
+}
+
+.content-option__left{
+  display: flex;
+  align-items: center;
+  float: left;
+    padding-top: 12px;
+}
+
+.selectedAmount{
+  margin-left: 20px;
+}
+
+.untickedAll{
+  color: #e84141;
+  margin-left: 18px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tickedAll{
+  color: #4785cc;
+  margin-left: 18px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.deleteAllButton{
+  opacity: 0.4;
+  /* background-color: #ccc !important; */
+  cursor: auto !important;
+}
+
+/* .deleteAllButton:hover{
+  opacity: 0.2;
+} */
+
+.mgl-18{
+  margin-left: 18px;
+}

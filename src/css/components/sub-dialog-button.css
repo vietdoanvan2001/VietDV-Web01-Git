@@ -1,0 +1,25 @@
+.subDialogButton{
+    border: 1px solid var(--sub-btn--border-coler);
+    color: #111;
+    background-color: #fff;
+    padding: 0 16px;
+    min-width: 80px;
+    height: 36px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Notosans-bold;
+}
+
+.mgl-8{
+    margin-left: 8px;
+}
+
+.subDialogButton:hover{
+    background-color: var(--sub-btn--hover-background-color);
+}
+
+.subDialogButton:active{
+    background-color: var(--sub-btn--active-background-color);
+}
