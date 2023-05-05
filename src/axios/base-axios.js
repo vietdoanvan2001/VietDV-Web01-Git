@@ -39,6 +39,24 @@ export const getAxios = async(endpoint,query) => {
 };
 
 /**
+ * Hàm base axios xử lí get request blob
+ * author: VietDV(27/3/2023)
+ * @param {*} endpoint 
+ * @param {*} query 
+ * @returns 
+ */
+export const getBodyAxiosBlob = async (endpoint, query) => {
+    debugger
+    return await HTTP.post(
+        endpoint,{
+            params: {
+                ...query
+            }
+        }
+      );
+  };
+
+/**
  * Hàm base axios xử lí post request
  * author: VietDV(25/2/2023)
  * @param {*} endpoint 
@@ -87,6 +105,7 @@ export const deleteAxios = async(endpoint,query) => {
  * @returns 
  */
 export const multipleDeleteAxios = async(endpoint,query) => {
+    debugger
     return await HTTP.delete(
         endpoint,{
             params: {
@@ -96,4 +115,4 @@ export const multipleDeleteAxios = async(endpoint,query) => {
       );
 } 
 
-export default {getAxios, postAxios, putAxios, deleteAxios, multipleDeleteAxios,getAxiosBlob}
+export default {getAxios, postAxios, putAxios, deleteAxios, multipleDeleteAxios,getAxiosBlob, getBodyAxiosBlob}

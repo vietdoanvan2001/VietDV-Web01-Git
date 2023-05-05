@@ -1,0 +1,1027 @@
+<template>
+  <employee-selectionTable 
+  v-if="showTable"
+  :listEmployee="employeeData.OvertimeEmployee"
+  @selectedEmployee="selectedEmployee"
+  @closeTable="closeTable"
+  @submit="onFormSubmit($event)"
+  ></employee-selectionTable>
+  <form
+        action=""
+        :useDefaultSubmitBehavior="false"
+        @submit="onSubmit"
+        @submit.prevent="onSubmit"
+      >
+  <div class="detail__container">
+    <div class="detail__header">
+      <div class="detail__header--left">
+        <div class="detail__header--icon" id="backButton" @click="hideDetail"></div>
+        <DxTooltip
+                :hide-on-outside-click="false"
+                target="#backButton"
+                show-event="mouseenter"
+                hide-event="mouseleave"
+            >
+                {{ titleIcon.back }}
+            </DxTooltip>
+        <div class="detail__header--title">
+          {{ formTitle }}
+        </div>
+      </div>
+      <div class="content__header--right"
+      v-if="mode == formModeList.addNew || mode == formModeList.fix"
+      >
+        <DxButton
+              class="m-sub-button mgr_8"
+              :text="textButton.cancel"
+              type="normal"
+              @click="hideDetail"
+            />
+        <DxButton
+          class="m-button w-80"
+          ref="saveBtn"
+          :text="textButton.save"
+          :use-submit-behavior="true"
+          @click="saveData"
+          type="normal"
+        />
+      </div>
+      <div class="content__header--right"
+      v-if="mode == formModeList.detail"
+      >
+        <DxButton
+          icon="edit"
+          class="m-button w-86"
+          :text="textButton.fix"
+          type="normal"
+          @click="changeFixForm"
+        />
+      </div>
+    </div>
+    <div class="detail__content">
+
+        <div class="detail__content--form">
+          <div class="detail__form--body">
+            <div class="detail__form--left">
+              <div class="detail__form--field">
+                <div class="detail__field--lable">
+                  {{ detailField.submitBy }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+
+                <DxSelectBox
+                  v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                  id="status__combobox--id"
+                  class="detail__dropdown"
+                  :style="mode == formModeList.fix?'background:#ececec; border: 1px solid #ececec !important; cursor: default !important;':''"
+                  :data-source="treeDataSource"
+                  valueExpr="EmployeeId"
+                  displayExpr="FullName"
+                  :placeholder="mode == formModeList.fix?employeeData.FullName:''"
+                  v-model:value="employeeData.EmployeeId"
+                  :readOnly="mode == formModeList.fix?true:false"
+                  :searchEnabled="true"
+                  item-template="item"
+                  :onContentReady="selectboxEmployeeReady"
+                  :searchExpr="['FullName','EmployeeCode']"
+                  :defer-rendering="true"
+                  @selection-changed="getSubmitBy($event)"
+                >
+                <template #item="{ data }">
+                  <detail-name
+                  :data="data"
+                  ></detail-name>
+                </template>
+
+                <DxValidator @validated="onValidated">
+                  <DxRequiredRule :message="detailField.submitBy + ' ' + validateMessage.required"/>
+                </DxValidator>
+                </DxSelectBox>
+
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.FullName"
+                />
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">{{ detailField.department }}</div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.DepartmentName"
+                />
+                <DxTextBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                  class="detail__input"
+                  :disabled="true"
+                  v-model:value="employeeData.DepartmentName"
+                />
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">
+                  {{ detailField.submitDate }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.ApplyDate"
+                />
+                <DxDateBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                  class="detail__date-picker"
+                  v-model:value="employeeData.ApplyDate"
+                  display-format="dd/MM/yyyy HH:mm"
+                  type="datetime"
+                  :applyButtonText="textButton.save"
+                  :cancelButtonText="textButton.cancel"
+                >
+                <DxValidator>
+                  <DxRequiredRule :message="detailField.submitDate+ ' ' + validateMessage.required "/>
+                  
+                </DxValidator>
+              </DxDateBox>
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">
+                  {{ detailField.overTimeFrom }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.FromDate"
+                />
+                <DxDateBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                class="detail__date-picker"
+                  v-model:value="employeeData.FromDate"
+                  display-format="dd/MM/yyyy HH:mm"
+                  type="datetime"
+                  :applyButtonText="textButton.save"
+                  :cancelButtonText="textButton.cancel"
+                >
+                <DxValidator>
+                  <DxRequiredRule :message="detailField.overTimeFrom+ ' ' + validateMessage.required"/>
+                </DxValidator>
+              </DxDateBox>
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">{{ detailField.restTimeFrom }}</div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.BreakTimeFrom"
+                />
+                <DxDateBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                class="detail__date-picker"
+                  placeholder="DD/MM/YYYY HH:mm"
+                  display-format="dd/MM/yyyy HH:mm"
+                  type="datetime"
+                  v-model:value="employeeData.BreakTimeFrom"
+                  :applyButtonText="textButton.save"
+                  :cancelButtonText="textButton.cancel"
+                />
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">{{ detailField.restTimeTo }}</div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.BreakTimeTo"
+                />
+                <DxDateBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                class="detail__date-picker"
+                  placeholder="DD/MM/YYYY HH:mm"
+                  display-format="dd/MM/yyyy HH:mm"
+                  type="datetime"
+                  v-model:value="employeeData.BreakTimeTo"
+                  :applyButtonText="textButton.save"
+                  :cancelButtonText="textButton.cancel"
+                />
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">
+                  {{ detailField.overTimeTo }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.ToDate"
+                />
+                <DxDateBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                class="detail__date-picker"
+                  v-model:value="employeeData.ToDate"
+                  display-format="dd/MM/yyyy HH:mm"
+                  type="datetime"
+                  :applyButtonText="textButton.save"
+                  :cancelButtonText="textButton.cancel"
+                >
+                <DxValidator>
+                  <DxRequiredRule :message="detailField.overTimeTo+' ' + validateMessage.required"/>
+                </DxValidator>
+              </DxDateBox>
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">
+                  {{ detailField.overTimeCase }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.OverTimeInWorkingShift"
+                />
+                <DxSelectBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                  id="status__combobox--id"
+                  class="detail__dropdown"
+                  :data-source="overTimeSelection"
+                  valueExpr="value"
+                  displayExpr="name"
+                  placeholder=""
+                  :searchEnabled="true"
+                  v-model:value="employeeData.OverTimeInWorkingShiftName"
+                >
+                <DxValidator>
+                  <DxRequiredRule :message="detailField.overTimeCase+' ' + validateMessage.required"/>
+                </DxValidator>
+                </DxSelectBox>
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">
+                  {{ detailField.applicableCase }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.WorkingShift"
+                />
+                <DxSelectBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                  id="status__combobox--id"
+                  class="detail__dropdown"
+                  :data-source="caseSelection"
+                  valueExpr="value"
+                  displayExpr="name"
+                  placeholder=""
+                  :searchEnabled="true"
+                  v-model:value="employeeData.WorkingShiftName"
+                >
+                <DxValidator>
+                  <DxRequiredRule :message="detailField.applicableCase+' ' + validateMessage.required"/>
+                </DxValidator>
+                </DxSelectBox>
+              </div>
+            </div>
+
+
+            <div class="detail__form--right">
+              <div class="detail__form--text-area">
+                <div class="detail__field--lable">
+                  {{ detailField.overTimeReason }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.Reason"
+                />
+                <DxTextArea
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                :style="(mode == formModeList.detail?'':'width: 100%; height: 90px;')"
+                v-model:value="employeeData.Reason"
+                v-model:auto-resize-enabled="autoResizeEnabled"
+                >
+                <DxValidator>
+                  <DxRequiredRule :message="detailField.overTimeReason+' '+validateMessage.required"/>
+                </DxValidator>
+                </DxTextArea>
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">
+                  {{ detailField.confirmBy }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.ApprovalName"
+                />
+                <DxSelectBox
+                v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                  id="status__combobox--id"
+                  class="detail__dropdown"
+                  :data-source="treeDataSource"
+                  valueExpr="EmployeeId"
+                  displayExpr="FullName"
+                  placeholder=""
+                  :searchEnabled="true"
+                  :searchExpr="['FullName','EmployeeCode']"
+                  v-model:value="employeeData.ApprovalId"
+                  @value-changed="getSelectedOption"
+                >
+                <template #item="{ data }">
+                  <detail-name
+                  :data="data"
+                  ></detail-name>
+                </template>
+                <DxValidator>
+                  <DxRequiredRule :message="detailField.confirmBy+' '+validateMessage.required"/>
+                </DxValidator>
+                </DxSelectBox>
+              </div>
+
+
+              <div class="detail__form--field">
+                <div class="detail__field--lable">{{ detailField.relatedPeople }}</div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.RelationShipNames"
+                />
+                <DxTagBox
+                  v-if="mode == formModeList.addNew || mode == formModeList.fix"
+                  id="status__combobox--id"
+                  class="detail__dropdown"
+                  :data-source="treeDataSource"
+                  display-expr="FullName"
+                  value-expr="EmployeeId"
+                  placeholder=""
+                  :searchEnabled="true"
+                  :searchExpr="['FullName','EmployeeCode']"
+                  v-model:value="relationshipIDs"
+                  @value-changed="getRelationShipNames($event)"
+                >
+                <button style="width: 32px; background-color: #000;">Click</button>
+                <template #item="{ data }">
+                  <detail-name
+                  :data="data"
+                  ></detail-name>
+                </template>
+                </DxTagBox>
+
+              </div>
+
+
+              <div class="detail__form--field" id="test">
+                <div class="detail__field--lable">
+                  {{ detailField.status }}
+                  <span :style="'color: red; margin-left: 2px;'">*</span>
+                </div>
+                <input class="detail-input"
+                readonly="true"
+                  v-if="mode == formModeList.detail"
+                  :value="employeeData.StatusName"
+                />
+                <DxSelectBox
+                v-if="mode != formModeList.detail"
+                  id="status__combobox--id"
+                  class="detail__dropdown"
+                  :data-source="statusSelection"
+                  valueExpr="value"
+                  displayExpr="name"
+                  :searchEnabled="true"
+                  v-model:value="employeeData.Status"
+                  placeholder=""
+                >
+                <DxValidator>
+                  <DxRequiredRule :message="detailField.status+' '+validateMessage.required"/>
+                </DxValidator>
+                </DxSelectBox>
+              </div>
+
+
+            </div> 
+          </div>
+          <div class="detail__content--list">
+            <div class="detail__list--header">
+              <div class="detail__list--title">
+                {{ contentTitle.employeeList }}
+                <div v-if="selectedRecord.length" style="padding-left: 16px;">{{ textButton.selected }} <span style="font-weight: 600;">{{ selectedRecord.length }}</span></div>
+                <span v-if="selectedRecord.length" style="cursor: pointer; color: blue; margin:0 24px;" @click="uncheckedSelectRows">{{ textButton.unchecked }}</span>
+                <span v-if="selectedRecord.length" style="cursor: pointer; color: red;" @click="clearSelectRows">{{ textButton.clear }}</span>
+              </div>
+              <div class="detail__list--button" @click="opentTable" v-if="mode != formModeList.detail">
+                <div class="list__button--icon"></div>
+                <div class="list__button--text" 
+                :style="'color: #ec5504; font-weight:600'">{{ textButton.iconButton }}</div>
+              </div>
+            </div>
+            <DxTextBox
+            v-if="mode == formModeList.detail"
+              class="content__search-input"
+              :placeholder="placeholderInput.searchInput"
+            >
+              <i class="dx-icon-search"></i>
+            </DxTextBox>
+            <div class="detail__list--body">
+              <m-table
+                  v-if="employeeData.OvertimeEmployee.length && !isReload"
+                  v-model:dataSubTable="employeeData.OvertimeEmployee"
+                  :dataTitle="employeeSelectionTableTitle"
+                  :isUncheckedSelected="isUncheckedSelected"
+                  :modeProp="mode"
+                  @addSelectedRecord="addSelectedRecord"
+                  @removeSelectedRecord="removeSelectedRecord"
+                  @clearEmployee = "clearSelectedEmployee"
+                ></m-table>  
+              <div v-if="!employeeData.OvertimeEmployee.length" style="padding-bottom: 24px; font-style: italic; color: #9fa4b4; font-size: 14px;">{{ placeholderInput.noData }}</div>
+            </div>
+            <div class="detail_list--footer" v-if="employeeData.OvertimeEmployee.length">
+              <div style="padding-left: 16px;">{{ textButton.selectedAmount }} <span style="font-weight: 600;">{{ employeeData.OvertimeEmployee.length }}</span></div>  
+            </div>
+          </div>
+        </div>
+      <div class="detail__content--note">
+          <div class="note__title">
+            {{ pagingText.title }}
+          </div>
+          <div class="note__content">
+            <div class="note__content--avatar">ĐV</div>
+            <div class="note__content--textfield">
+              <input type="text" class="note__input"
+                :placeholder="placeholderInput.note"
+              >
+              <div class="note__button">
+                <div class="note__icon"></div>
+              </div>
+            </div>
+          </div>
+          <div class="note__text"><span :style="'opacity:0.5'">{{ pagingText.text }}</span><span :style="'color:#ec5504; font-weight: 600; margin-left: 4px;'">{{ pagingText.cancel }}</span></div>
+          <div class="note__option">
+            <div class="note__option--item" :style="'color: #ec5504; margin-left: 24px;'">
+              {{ pagingText.all }}
+              <div class="item__border" ></div>
+            </div>
+            <div class="note__option--item">{{ pagingText.title }}</div>
+            <div class="note__option--item">{{ pagingText.history }}</div>
+          </div>
+        </div>
+    </div>
+  </div>
+  </form>
+</template>
+
+<script>
+import {
+  contentTitle,
+  textButton,
+  placeholderInput,
+  pagingText,
+  detailField,
+  statusSelectionForm,
+  validateMessage,
+  overTimeSelection,
+  caseSelection,
+  titleIcon,
+  employeeSelectionTableTitle,
+  dialogText
+} from '@/js/resource.js'
+import {formMode,toastStatus} from '@/js/enum.js'
+import {DxButton, DxTextBoxButton} from "devextreme-vue/button";
+import DxSelectBox from "devextreme-vue/select-box";
+import DxTextArea from 'devextreme-vue/text-area';
+import DxDateBox from 'devextreme-vue/date-box';
+import DxTextBox from 'devextreme-vue/text-box';
+import DxTagBox from 'devextreme-vue/tag-box';
+import notify from "devextreme/ui/notify";
+import { locale } from 'devextreme/localization';
+import viMessages from 'devextreme/localization/messages/vi.json';
+import { custom } from 'devextreme/ui/dialog';
+
+
+import {
+  DxValidator,
+  DxRequiredRule
+} from 'devextreme-vue/validator';
+import {
+  getAllEmployees
+} from "@/axios/controller/employee-controller.js"
+import {
+  getOverTimeById,addOverTime,putOverTime
+} from '@/axios/controller/overtime-controller.js'
+import { DxTooltip } from 'devextreme-vue/tooltip';
+import {
+  DxDataGrid,
+  DxColumn,
+  DxPaging,
+  DxSelection,
+} from "devextreme-vue/data-grid";
+import DataSource from 'devextreme/data/data_source';
+
+export default {
+  components:{
+    DxTooltip,
+    DxButton,
+    DxSelectBox,
+    DxTextArea,
+    DxDateBox, 
+    DxDataGrid,
+  DxColumn,
+  DxPaging,
+  DxSelection,
+    DxTextBox,DxValidator,DxRequiredRule,DxTagBox,DxTextBoxButton
+  },
+  created() {
+    // Cấu hình ngôn ngữ mặc định cho ứng dụng
+  locale('vi', viMessages);
+    if(!this.employeeData.OvertimeEmployee){
+        this.employeeData.OvertimeEmployee = []
+    }
+    if(!this.employeeData.ApplyDate){
+      this.employeeData.ApplyDate = new Date()
+    }
+    if(!this.employeeData.FromDate){
+      const now = new Date();
+      this.employeeData.FromDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    }
+    if(!this.employeeData.ToDate){
+      const now = new Date();
+      this.employeeData.ToDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    }
+    if(!this.employeeData.Status){
+        this.employeeData.Status = 1
+    }
+    this.mode = this.formMode
+    this.getEmployeeData();
+   
+    if(this.idDataProp){
+      this.getDataById(this.idDataProp)
+    }
+    
+    if(this.formMode == this.formModeList.addNew){
+      this.formTitle =  this.contentTitle.title_add
+    }
+    else if(this.formMode == this.formModeList.detail){
+      this.formTitle = this.contentTitle.title_detail
+    }
+    else{
+      this.formTitle = this.contentTitle.title_fix
+    }
+  },
+  props:{
+    //kiểu form truyền từ EmployeeList
+    formMode: {
+      type : Number
+    },
+    //Dữ liệu nhân viên được chọn
+    idDataProp:{
+      type: Object
+    }
+  },
+  watch:{
+    employeeData: {
+      handler() {
+          if(!this.employeeData.OvertimeEmployee && typeof(this.employeeData.OvertimeEmployee) != 'undefined' && this.employeeData.OvertimeEmployee.length == 0){
+            this.selectedRecord = []
+          }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
+  data() {
+    return {
+      employeeSelectionTableTitle:employeeSelectionTableTitle,
+      titleIcon:titleIcon,
+      contentTitle:contentTitle,
+      textButton:textButton,
+      formModeList:formMode,
+      mode:Number,
+      placeholderInput:placeholderInput,
+      pagingText:pagingText,
+      formTitle: "",
+      detailField:detailField,
+      statusSelection:statusSelectionForm,
+      showTable: false,
+      employeeData:{},
+      validateMessage:validateMessage,
+      caseSelection:caseSelection,
+      overTimeSelection:overTimeSelection,
+      isUncheckedSelected:false,
+      selectedRecord:[],
+      treeDataSource:new DataSource({
+            store: {
+              type: 'array',
+              key: 'EmployeeID',
+              data: []
+            },
+            paginate: true,
+            pageSize: 10
+          }),
+      passwordButton: {
+        icon: "save",
+        type: 'default',
+        onClick: () => {
+          this.passwordMode = this.passwordMode === 'text' ? 'password' : 'text';
+        },
+      },
+      departmentName:"",
+      relationShipNames:[],
+      relationshipIDs:[],
+      isReload:false
+    }
+  },
+  methods: {
+    /**
+     * focus vào ô đầu tiên của bảng detail
+     * author: VietDV(5/5/2023)
+     * @param {*} e 
+     */
+    selectboxEmployeeReady(e){
+      this.$nextTick(() => e.component.focus())
+    },
+    /**
+     * Chặn gửi form mặc định của thư viện
+     * author: VIetDV(28/4/2023)
+     * @param {*} event 
+     */
+    onSubmit(event) {
+      event.preventDefault();
+    },
+
+    /**
+     * Lấy tên người duyệt
+     * author: VietDV(28/4/2023)
+     */
+    getSelectedOption() {
+      let selectedOption = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.ApprovalId)?.FullName;
+      this.employeeData.ApprovalName = selectedOption;
+    },
+
+    /**
+     * Lấy tên những người liên quan
+     * author: VietDV(28/4/2023)
+     * @param {*} e 
+     */
+    getRelationShipNames(){
+      
+      this.relationShipNames = [];
+      this.relationshipIDs.forEach(id => {
+        let option = this.treeDataSource.find(option => option.EmployeeId === id);
+        if (option) {
+          this.relationShipNames.push(option.FullName);
+        }
+      });
+      this.employeeData.RelationShipNames = this.relationShipNames.toString();
+    },
+
+    /**
+     * Lấy thông tin người nộp đơn
+     * author: VietDV(28/4/2023)
+     */
+    getSubmitBy() {
+      let fullName = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.FullName;
+      let employeeCode = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.EmployeeCode;
+      let employeeId = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.EmployeeId;
+      let MISACode = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.MISACode;
+      let positionName = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.PositionName;
+      let positionId = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.PositionId;
+      let departmentName = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.DepartmentName;
+      let departmentId = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.DepartmentId;
+      
+      this.employeeData.FullName = fullName,
+      this.employeeData.EmployeeCode = employeeCode,
+      this.employeeData.EmployeeId = employeeId,
+      this.employeeData.MISACode = MISACode,
+      this.employeeData.PositionId = positionId,
+      this.employeeData.PositionName = positionName,
+      this.employeeData.DepartmentId = departmentId,
+      this.employeeData.DepartmentName = departmentName
+    },
+
+    /**
+     * Emit lên EmployeeList để đóng form
+     * author: VietDV(17/4/2023)
+     */
+     hideDetail(){
+      this.$nextTick(function() {
+        // tạo dialog
+            let myDialog = custom({
+                title: dialogText.notifyTitle,
+                messageHtml: dialogText.changedMessage,
+                showCloseButton: true,
+                buttons: [{
+                  className: "cancel-button",
+                    text: textButton.cancel,
+                    onClick: (e) => {
+                        return { buttonText: e.component.option("text") }
+                    }
+                },
+                {
+                  className: "cancel-button",
+                    text: textButton.unsave,
+                    onClick: (e) => {
+                        return { buttonText: e.component.option("text") }
+                    }
+                },
+                {
+                    text: textButton.save,
+                    type: toastStatus.default,
+                    onClick: (e) => {
+                        return { buttonText: e.component.option("text") }
+                    }
+                },
+                ]
+            });
+            //Hiển thị dialog và bắt các sự kiện
+            myDialog.show().then(async (dialogResult) => {
+              if (dialogResult.buttonText === textButton.save) {
+                // this.saveData();
+                // console.log(this.$refs['saveBtn'].instance.click());
+                // this.$refs['saveBtn'].instance.click()
+                const a = document.getSelection(this.$refs.saveBtn.instance._$element);
+                a.onClick();
+                
+              }
+              else if(dialogResult.buttonText === textButton.unsave){
+                this.$emit("hideDetail");
+              } 
+              else {
+                return;
+              }
+            });
+        })
+    },
+
+    /**
+     * Mở bảng chọn nhân viên
+     * author: VietDV(17/4/2023)
+     */
+     opentTable(){
+      this.showTable = true
+    },
+
+    /**
+     * Đóng bảng chọn nhân viên
+     * author: VietDV(17/4/2023)
+     */
+    closeTable(){
+      this.showTable = false
+    },
+
+    /**
+     * Chuyển sang form sửa thông tin nhân viên
+     * author: VietDV(17/4/2023)
+     */
+    changeFixForm(){
+      this.isReload = true
+      this.mode = this.formModeList.fix       
+      this.formTitle = this.contentTitle.title_fix
+      setTimeout(() => {
+        this.isReload = false
+      }, 0);
+    },
+
+    selectedEmployee(listEmployee){
+      listEmployee.forEach(element => {
+        this.employeeData.OvertimeEmployee.push(element);
+      }
+      );
+    },
+
+    /**
+     * Lưu form
+     * author: VietDV(20/4/2023)
+     * @param {*} e 
+     */
+     onFormSubmit(e){
+      debugger
+      e.preventDefault();
+     },
+    /**
+     * Hàm call API lấy thông tin làm thêm theo ID
+     * author: VietDV(24/4/2023)
+     * @param {selectedID} id
+     */
+     getDataById: async function (id) {
+      try {
+        const res = await getOverTimeById(id);
+        this.employeeData = res.data;
+        console.log(this.employeeData);
+        
+        this.relationshipIDs = this.employeeData.RelationShipIDs.split(",");
+      } catch (error) {
+        console.log(error);
+      }
+      this.$emit("hideLoadingLayer");
+    },
+
+    /**
+     * Hàm call api lấy toàn bộ nhân viên
+     * author: VietDV(24/4/2023)
+     */
+     getEmployeeData: async function () {
+      try {
+        const res = await getAllEmployees();
+        if(res != null){
+          this.treeDataSource = new DataSource({
+            store: {
+              type: 'array',
+              key: 'EmployeeID',
+              data: res.data
+            },
+            paginate: true,
+            pageSize: 10
+          })
+          //Loại bỏ trường rỗng trong object
+          for(let item in this.treeDataSource){
+            for (let prop in this.treeDataSource[item]) {
+                    if ([null, undefined, "", {}].includes(this.treeDataSource[item][prop])) {
+                      delete this.treeDataSource[item][prop];
+                    }
+              }
+          }
+          
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Hàm call api thêm mới
+     * author: VietDV(28/4/2023)
+     * @param {*} body
+     */
+     postData: async function (body) {
+      // debugger
+      try {
+        this.$emit("showLoading")
+        const res = await addOverTime(body);
+        if (res.status == 201) {
+          this.notifyMsg(toastStatus.success, dialogText.addSuccess);
+          this.$emit("reloadData");
+          this.$emit("hideDetail");
+        } else {
+          this.notifyMsg(toastStatus.error, dialogText.addFail);
+          console.log("error");
+          this.$emit("hideLoading");
+        }
+      } catch (error) {
+        this.notifyMsg(toastStatus.error, dialogText.addFail);
+        console.log(error);
+        this.$emit("hideLoading");
+      }
+    },
+
+    /**
+     * Hàm call api sửa thông tin
+     * author: VietDV(28/4/2023)
+     * @param {*} id
+     * @param {*} body
+     */
+     updateOverTime: async function (id, body) {
+      this.$emit("showLoading");
+      try {
+        const res = await putOverTime(id, body);
+        if (res.status == 200) {
+          this.notifyMsg(toastStatus.success, dialogText.updateSuccess);
+          this.$emit("reloadData");
+          this.$emit("hideDetail");
+        } 
+        else 
+        {
+          this.notifyMsg(toastStatus.error, dialogText.updateFail);
+          console.log("error");
+          this.$emit("hideLoading");
+          
+        }
+      } catch (error) {
+        this.notifyMsg(toastStatus.error, dialogText.updateFail);
+        console.log(error);
+        this.$emit("hideLoading");
+      }
+    },
+
+    /**
+     * click chọn button Lưu
+     * author: VietDV(28/4/2023)
+     */
+    saveData(e){
+      console.log(e);
+      this.employeeData.RelationShipIDs = this.relationshipIDs.toString();
+      //Check validate
+      setTimeout(() => {
+        //Nếu hết lỗi thì thực hiện gửi form
+        if (e.validationGroup._validationInfo.result.brokenRules.length === 0) {
+          if(this.mode == this.formModeList.addNew){
+            this.postData(this.employeeData);
+          }
+          else{
+            this.updateOverTime(this.employeeData.OverTimeId,this.employeeData);
+          }
+        }
+      }, 0);
+    },
+
+     /**
+     * thêm id vào danh sách các bản ghi được chọn
+     * author: VietDV(30/4/2023)
+     * @param {*} listIDs 
+     */
+     addSelectedRecord(listIDs){
+      listIDs.forEach(element => {
+        if(!this.selectedRecord.includes(element)){
+          this.selectedRecord.push(element);
+        }
+      });
+    },
+
+    /**
+     * xoá id trong danh sách các bản ghi được chọn
+     * author: VietDV(30/4/2023)
+     * @param {*} listIDs 
+     */
+    removeSelectedRecord(listIDs){
+      listIDs.forEach(element => {
+          let index = this.selectedRecord.findIndex(ele => ele === element);
+          if(index > -1){
+            this.selectedRecord.splice(index,1);
+          }
+      });
+    },
+    /**
+     * Bỏ chọn các bản ghi đang select
+     * author: VietDV(2/5/2023)
+     */
+     uncheckedSelectRows(){
+      //Đổi cờ theo dõi ấn nút bỏ chọn để bắt sự kiện trong table
+      this.isUncheckedSelected = !this.isUncheckedSelected
+    },
+
+    /**
+     * Loại bỏ các nhân viên làm thêm đã chọn
+     * author: VietDV(2/5/2023)
+     */
+    clearSelectRows(){
+      this.employeeData.OvertimeEmployee = this.employeeData.OvertimeEmployee.filter(ele => {
+        return  !this.selectedRecord.includes(ele);
+      });
+      this.selectedRecord = []
+    },
+
+    /**
+     * Loại bỏ nhân viên làm thêm khi ấn nút loại bỏ
+     * author: VietDV(2/5/2023)
+     * @param {*} e 
+     */
+    clearSelectedEmployee(e){
+      const index = this.employeeData.OvertimeEmployee.findIndex(element => element === e);
+      this.employeeData.OvertimeEmployee.splice(index,1);
+    },
+
+    /**
+     * Toast message
+     * author: VietDV(30/4/2023)
+     * @param {*} type 
+     * @param {*} message 
+     */
+     notifyMsg(type, message) {
+      notify(
+        {
+          message: message,
+          width: 230,
+          height: 40,
+          position: {
+            at: "bottom right",
+            my: "bottom right",
+          },
+        },
+        type,
+        500
+      );
+    },
+  },
+}
+</script>
+
+<style>
+    @import url(@/css/main.css);
+
+</style>

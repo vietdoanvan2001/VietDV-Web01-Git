@@ -1,29 +1,30 @@
-//Định ngĩa các keycode
-export const keyCodeName = {
-    //Phím enter
-    Enter: 13,
-    //Phím tab
-    Tab: 9,
-    //Phím mũi tên xuống
-    Down: 40,
-    //Phím mũi tên lên
-    Up: 38,
-    //Phím shift
-    Shift: 16,
-    //Phím N
-    N: 78,
-    //Phím S
-    S:83,
-    //Phím ESC
-    ESC:27
+//các mode khi mở form chi tiết
+export const formMode = {
+    //Form thêm mới
+    addNew : 1,
+    //Form thông tin chi tiết 
+    detail : 2,
+    //Form sửa thông tin
+    fix : 3
 }
 
-//giới tính
-export const gender = {
-    //Nam
-    Male: 1,
-    //Nữ
-    Female: 0,
-    //Khác
-    Other: 2
+//giá trị mặc định của offSet trong params
+export const valueDefault = {
+    offset : 0,
+    MISACode : '1'
+}
+
+//Các trạng thái của toastMessage
+export const toastStatus = {
+    success : "success",
+    error : "error",
+    danger : "danger",  
+    default: "default"  
+}
+
+//Các status bảng làm thêm
+export const status = {
+        wait : 1,
+        accept : 2,
+        deny : 3
 }

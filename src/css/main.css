@@ -1,38 +1,72 @@
-@import url(../css/base.css);
-@import url(../css/layout/content.css);
-@import url(../css/layout/header.css);
-@import url(../css/layout/menu.css);
-@import url(../css/components/button.css);
-@import url(../css/components/sub-button.css);
-@import url(../css/components/dialog-button.css);
-@import url(../css/components/sub-dialog-button.css);
-@import url(../css/components/input.css);
-@import url(../css/components/table.css);
-@import url(../css/views/employee-list.css);
-@import url(../css/components/paging.css);
 @import url(../css/views/employee-detail.css);
-@import url(../css/components/popup.css);
-@import url(../css/components/toast.css);
-@import url(../css/components/combobox.css);
-@import url(../css/components/detail-combobox.css);
+@import url(../css/views/employee-list.css);
+@import url(../css/components/base/dialog.css);
 
 * {
-    font-family: 'Notosans', sans-serif;
+    font-family: Roboto,Helvetica,Arial,sans-serif;
     font-size: 14px;
+    font-weight: 400;
     outline: none;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.layout-right{
-    float: right;
-    width: calc( 100% - 200px);
-    height: 100vh;
+.m-l-16 {
+    margin-left: 16px!important;
 }
 
-.layout-left{
-    float: left;
-    width: 200px;
-    height: 100vh;
+.m-r-48 {
+    margin-right: 48px!important;
+}
+
+.flex {
+    display: flex;
+}
+
+.align-center {
+    align-items: center !important;
+}
+
+.tags{
+    display: inline;
+    border-radius: 5px;
+    font-size: 13px;
+    /* bottom: -30px; */
+    color: #fff;
+    content: attr(data-gloss);
+    padding: 5px;
+    position: absolute;
+    z-index: 98;
+    text-align: center;
+}
+
+.tags:hover:after{
+    background: #212121;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #fff;
+    content: attr(data-gloss);
+    padding: 5px;
+    position: absolute;
+    z-index: 1000;
+    text-align: center;
+    width: 64px;
+    top: 32px;
+    right: -6px;
+}
+.tags:hover:before{
+    border: solid;
+    border-color: #212121 transparent;
+    border-width: 6px 6px 0px 6px;
+    content: "";
+    position: absolute;
+    z-index: 1000;
+    top: 26px;
+    left: 16px;
+    transform: rotate(180deg);
+}
+
+.dx-button-mode-contained.dx-button-default{
+    background-color: #ec5504 !important;
 }

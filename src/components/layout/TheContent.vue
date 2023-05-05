@@ -1,16 +1,15 @@
 <template>
-    <div class="content">
-        <router-view></router-view>
-    </div>
+  <div class="content">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
 export default {
 
-    
 }
 </script>
 
 <style>
-    @import url(@/css/main.css);
+  @import url(@/css/components/layout/content.css);
 </style>

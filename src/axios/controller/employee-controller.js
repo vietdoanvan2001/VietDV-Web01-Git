@@ -3,12 +3,22 @@ import {endPoint} from '@/axios/end-point.js';
 
 
 /**
+ * Hàm call api lấy toàn bộ danh sách nhân viên
+ * author: VietDV(3/3/2023)
+ * @returns danh sách nhân viên
+ */
+export async function getAllEmployees(){
+    const endpoint = endPoint.EMPLOYEES;
+    return await axios.getAxios(endpoint);
+}
+
+/**
  * Hàm call api lấy danh sách nhân viên theo điều kiện
  * author: VietDV(25/2/2023)
- * @param {params: {pageSize, pageNumber, employeeFilter}} params 
  * @returns danh sách nhân viên thoả mãn điều kiện
  */
 export async function getEmployeeFilter(params){
+    console.log(params);
     const endpoint = endPoint.EMPLOYEES_FILTER;
     return await axios.getAxios(endpoint,params)
 }

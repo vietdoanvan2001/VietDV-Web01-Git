@@ -1,0 +1,104 @@
+<template>
+    <DxDropDownBox
+        v-model:value="params.MISACode"
+        v-model:opened="isTreeBoxOpened"
+        :show-clear-button="true"
+        :data-source="treeDataSource"
+        value-expr="MISACode"
+        display-expr="DepartmentName"
+        :placeholder="placeholderInput.allDepartment"
+        :width="318"
+    >
+        <template #content="{ data }">
+        <DxTreeView
+            :ref="treeViewRefName"
+            :data-source="treeDataSource"
+            :select-by-click="true"
+            data-structure="plain"
+            key-expr="MISACode"
+            parent-id-expr="ParentId"
+            selection-mode="single"
+            display-expr="DepartmentName"
+            @item-selection-changed="changeDepartment($event)"
+            @item-click="onTreeItemClick($event)"
+        />
+        <div style="display: none;">{{ data }}</div>
+        </template>
+    </DxDropDownBox>
+  </template>
+  
+  <script>
+import DxTreeView from 'devextreme-vue/tree-view';
+import DxDropDownBox from 'devextreme-vue/drop-down-box';
+import {placeholderInput} from '@/js/resource.js';
+import {
+  getAllDepartments
+} from "@/axios/controller/department-controller.js";
+
+  export default {
+    components:{
+        DxDropDownBox,DxTreeView
+    },
+    props:{
+        paramsData: {}
+    },
+    created() {
+        this.getDepartmentData();
+    },
+    data() {
+        return {
+            treeViewRefName: 'tree-view',
+            isTreeBoxOpened: false,
+            placeholderInput:placeholderInput,
+            treeDataSource:[],
+            params:this.paramsData
+        }
+    },
+    methods: {
+        /**
+         * Hàm call api lấy toàn bộ danh sách đơn vị
+         * author: VietDV(24/4/2023)
+         */
+        getDepartmentData: async function () {
+        try {
+            const res = await getAllDepartments();
+            if(res != null){
+            this.treeDataSource = res.data;
+            //Loại bỏ trường rỗng trong object
+            for(let item in this.treeDataSource){
+                for (let prop in this.treeDataSource[item]) {
+                        if ([null, undefined, "", {}].includes(this.treeDataSource[item][prop])) {
+                        delete this.treeDataSource[item][prop];
+                        }
+                }
+            }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        },
+
+        /**
+         * Lưu giá trị id phòng ban vào params khi chọn item
+         * author: VietDV(24/4/2023)
+         * @param {*} e 
+         */
+         changeDepartment(e) {
+            this.params.MISACode = e.itemData.MISACode;
+            this.$emit("changeDepartment",this.params.MISACode);
+        },
+
+        /**
+         * Đóng dropdown khi chọn xong item
+         * author: VietDV(24/4/2023)
+         */
+        onTreeItemClick() {
+            this.isTreeBoxOpened = false;
+        },
+    },
+  }
+  </script>
+  
+  <style>
+  
+  </style>

@@ -3,7 +3,7 @@ import {endPoint} from '@/axios/end-point.js';
 
 /**
  * Hàm call api lấy toàn bộ danh sách Đơn vị
- * author: VietDV(3/3/2023)
+ * author: VietDV(26/4/2023)
  * @returns danh sách đơn vị
  */
 export async function getAllDepartments(){
@@ -13,7 +13,7 @@ export async function getAllDepartments(){
 
 /**
  * Hàm call api lấy đơn vị theo id
- * author: VietDV(3/3/2023)
+ * author: VietDV(26/4/2023)
  * @param {*} id 
  * @returns object đơn vị
  */
@@ -21,3 +21,4 @@ export async function getDepartmentById(id){
     const endpoint = endPoint.DEPARTMENTS+"/"+id;
     return await axios.getAxios(endpoint);
 }
+
