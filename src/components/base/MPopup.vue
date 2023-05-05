@@ -11,7 +11,7 @@
       <div class="pop-up-title" v-if="isWarning">
         {{ popupTitle.DeleteData }}
       </div>
-      <div class="pop-up__head-icon" @click="closePopup"></div>
+      <div class="pop-up__head-icon" @click="closePopup" :title="titleIcon.close"></div>
     </div>
     <div class="pop-up__content">
       <div class="pop-up__icon" :class="popupIconClass"></div>
@@ -79,7 +79,7 @@
 
 <script>
 import {  keyCodeName } from "@/js/enum.js";
-import {buttonStatus, popupTitle, buttonText } from "@/js/resources.js";
+import {buttonStatus, popupTitle, buttonText, titleIcon } from "@/js/resources.js";
 export default {
   name: "MPopup",
   created() {
@@ -129,7 +129,8 @@ export default {
       buttonStatus: buttonStatus,
       popupTitle: popupTitle,
       keyCodeName: keyCodeName,
-      buttonText:buttonText
+      buttonText:buttonText,
+      titleIcon:titleIcon
     };
   },
   methods: {

@@ -125,6 +125,7 @@ export default {
     pagingParamsProp: {
       handler(){
         this.$emit("loadData",this.pagingParamsProp);
+        this.listSellectedEmployeeId = [];
       },
       immediate: true,
       deep: true,
@@ -248,7 +249,7 @@ export default {
           // console.log(this.employeeList[i]);
           this.listSellectedEmployeeId.push(this.employeeList[i].EmployeeId)
         }
-        console.log(this.listSellectedEmployeeId);
+        // console.log(this.listSellectedEmployeeId);
         this.tikedAmount = this.employeeList.length;
       } else {
         for (let i = 0; i < this.employeeList.length; i++) {

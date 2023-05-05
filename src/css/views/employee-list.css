@@ -47,9 +47,10 @@
 
 .content-body {
   /* width: 100%; */
+  margin-bottom: 24px;
   background-color: #fff;
   margin-top: 89px;
-  height: calc(100vh - 189px);
+  height: calc(100vh - 213px);
   overflow-x: scroll;
   overflow-y: scroll;
   overflow: scroll;

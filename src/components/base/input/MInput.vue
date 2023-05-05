@@ -11,7 +11,7 @@
       :ref="name"
     />
     <div class="detail-tooltip" v-show="showTooltip">
-      {{ errorTitle || errorValueData.title }}
+      {{ errorValueData.title || errorTitle }}
     </div>
   </div>
 </template>
@@ -162,7 +162,7 @@ export default {
      * @param {*} value 
      */
     validateOnlyNumber(value){
-      if(value){
+      if(value != null && value.trim() != ''){
           const emailRegex = /^[0-9]+$/;
           if(emailRegex.test(value) == false){
             this.errorTitle = this.warningText.OnlyNumberField
@@ -248,13 +248,16 @@ export default {
           this.errorBorder = true;
           this.showTooltip = true;
         } else {
+          this.errorTitle = this.fieldName + " " + this.warningText.Require;
           this.$emit("removeError", this.errorTitle,this.name);
           this.errorBorder = false;
           this.showTooltip = false;
         }
     },
 
-
+    focus(){
+      this.$nextTick(() => this.$refs[this.name].focus());
+    },
   },
 };
 </script>

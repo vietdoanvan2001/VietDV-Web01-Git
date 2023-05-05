@@ -13,18 +13,18 @@
         <h1 class="detail-name">
           {{ isFix ? formTitle.Fix : formTitle.Add }}
         </h1>
-        <div class="detail__head-select">
+        <!-- <div class="detail__head-select">
           <input type="checkbox" name="" id="" />
           <div class="select__text">{{ employeeDetailLabel.isCustomer }}</div>
         </div>
         <div class="detail__head-select">
           <input type="checkbox" name="" id="" />
           <div class="select__text">{{ employeeDetailLabel.isSupplier }}</div>
-        </div>
+        </div> -->
       </div>
       <div class="detail__head-left">
-        <div class="help-btn detail-icon"></div>
-        <div class="close-btn detail-icon" @click="cancelDetail"></div>
+        <!-- <div class="help-btn detail-icon"></div> -->
+        <div :title="titleIcon.close" class="close-btn detail-icon" @click="cancelDetail"></div>
       </div>
     </div>
     <div class="detail__container">
@@ -41,12 +41,13 @@
               @addError="addError"
               @removeError="removeError"
               :firstFocus="true"
-              :name="validateForm.EmployeeCode.name"
+              :name="validateForm?.EmployeeCode.name"
               :fieldName="validateForm.EmployeeCode.label"
               :focusFieldName="focusField"
               :errorValueProp="validateForm.EmployeeCode"
               :watchForm="watchForm"
               :isReadonly="isFix"
+              ref="EmployeeCode"
             >
             </m-input>
           </div>
@@ -242,27 +243,33 @@
             @updateValue="employeeDetailData.BankBranch = $event"
             ></m-input>
           </div>
+          <input type="text" style="opacity: 0; width: 0;" @keyup.tab="focusButton">
         </div>
       </div>
     </div>
-    <div class="detail__bottom">
+    <template class="detail__bottom">
       <div class="bottom-left">
+        <input type="text" tabindex="4" style="opacity: 0; width: 0;" @keyup.tab="() => this.$nextTick(() => this.$refs.EmployeeCode.focus()) ">
         <sub-dialogButton 
-        :title="buttonDetailExplain.Cancel"
+        tabindex="3"
+        :title="buttonDetailExplain.cancel"
         :text=buttonText.cancelDetail @click="cancelDetail"></sub-dialogButton>
       </div>
       <div class="bottom-right">
         <sub-dialogButton 
-        :title="buttonDetailExplain.Save"
+        tabindex="1"
+        ref="saveButton"
+        :title="buttonDetailExplain.save"
         :text=buttonText.saveData @click="saveData"></sub-dialogButton>
         <dialog-button
+          tabindex="2"
           :title="buttonDetailExplain.saveAndAdd"
           :text=buttonText.saveAndAdd
           class="save-btn"
           @click="saveAndAddNew"
         ></dialog-button>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -279,7 +286,8 @@ import {
   employeeDetailLabel,
   titleExplain,
   buttonText,
-  buttonDetailExplain
+  buttonDetailExplain,
+  titleIcon
 } from "../../js/resources.js";
 import {
   keyCodeName,
@@ -324,9 +332,7 @@ export default {
       this.getNewEmployeeCode();
     }
   },
-  // mounted() {
-  //   this.getNewEmployeeCode();
-  // },
+
   data() {
     return {
       test: "",
@@ -361,7 +367,8 @@ export default {
       buttonText:buttonText,
       buttonDetailExplain:buttonDetailExplain,
       newEmployeeCode:"",
-      isDuplicateEmployee: this.isDuplicateEmployeeProp
+      isDuplicateEmployee: this.isDuplicateEmployeeProp,
+      titleIcon:titleIcon
     };
   },
   watch: {
@@ -377,6 +384,14 @@ export default {
     },
   },
   methods: {
+    /**
+     * focus vào các nút trong form khi tab
+     * author: VietDV(4/4/2023)
+     */
+    focusButton(){
+      this.$refs.saveButton.$refs.buttonFocusRef.focus();
+
+    },
     /**
      * click cancel icon hiển thị popup hỏi nếu dữ liệu thay đổi
      * author: VietDV(18/2/2023)
@@ -568,7 +583,12 @@ export default {
     getData: async function (id) {
       try {
         const res = await getEmployeeByID(id);
-        this.originalData = res.data;
+        if(!this.isSaveAndAddNew){
+          this.originalData = res.data;
+        }
+        else{
+          this.originalData = {};
+        }
         this.employeeDetailData = { ...this.originalData };
       } catch (error) {
         console.log(error);
@@ -604,6 +624,7 @@ export default {
           this.$emit("closePopup")
         } else {
           console.log("error");
+          this.isSaveAndAddNew = false;
         }
       } catch (error) {
         console.log(error);
@@ -613,8 +634,7 @@ export default {
         for(let i = 0; i< arrayError.length;i++){
           let fieldError = arrayError[i].ErrorField;
           let errorText = arrayError[i].UserMsg;
-          let title =
-            this.validateForm[fieldError].label + " " + errorText;
+          let title = errorText;
             this.validateForm[fieldError].class = true;
             this.validateForm[fieldError].title = title;
           this.addError(errorText, fieldError);
@@ -627,6 +647,7 @@ export default {
             }
           }
           this.focusField = this.fieldError[0];
+          this.isSaveAndAddNew = false;
           this.$emit("showError", this.inputError);
         }
         this.$emit("hideLoadingLayer");
@@ -696,7 +717,7 @@ export default {
         {
           this.toastStatusTxt = this.toastStatusList.Fail;
           this.toastActivityTxt = this.toastActivityList.UpdateFail;
-          this.isSaveAndAddNew = true;
+          this.isSaveAndAddNew = false;
           this.isFix = true;
           this.$emit(
             "showToastMessage",
@@ -710,8 +731,7 @@ export default {
         for(let i = 0; i< arrayError.length;i++){
           let fieldError = arrayError[i].ErrorField;
           let errorText = arrayError[i].UserMsg;
-          let title =
-            this.validateForm[fieldError].label + " " + errorText;
+          let title = errorText;
             this.validateForm[fieldError].class = true;
             this.validateForm[fieldError].title = title;
           this.addError(errorText, fieldError);
@@ -728,7 +748,7 @@ export default {
           // this.getNewEmployeeCode();
         }
         this.$emit("hideLoadingLayer");
-        this.isSaveAndAddNew = true;
+        this.isSaveAndAddNew = false;
         this.isFix = true;
       }
     },

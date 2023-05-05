@@ -64,10 +64,17 @@
             <div class="inputIcon" @click="searchData"></div>
           </div>
           <div class="content-icon">
-            <div class="content_export-icon" @click="exportDataTable"></div>
+            <div 
+            :title= titleIcon.export
+            class="content_export-icon" 
+            @click="exportDataTable"></div>
           </div>
           <div class="content-icon last-content-icon">
-            <div class="content_refresh-icon" @click="refreshData"></div>
+            <div 
+            class="content_refresh-icon" 
+            @click="refreshData"
+            :title=titleIcon.reload
+            ></div>
           </div>
         </div>
       </div>
@@ -120,6 +127,7 @@ import {
   employeeListText,
   buttonText,
   inputPlaceholder,
+  titleIcon
 } from "@/js/resources.js";
 export default {
   name: "EmployeeList",
@@ -163,7 +171,8 @@ export default {
       inputPlaceholder: inputPlaceholder,
       isResetData: false,
       unchecked: false,
-      isDuplicateEmployee:false
+      isDuplicateEmployee:false,
+      titleIcon:titleIcon
     };
   },
   methods: {
@@ -174,7 +183,7 @@ export default {
      */
     showTikedAmount(amount) {
       this.tikedAmount = amount;
-      if (this.tikedAmount >= 1) {
+      if (this.tikedAmount > 1) {
         this.disableButton = false;
       } else {
         this.disableButton = true;

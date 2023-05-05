@@ -275,8 +275,8 @@ export const listValidateField = {
 //Text câu hỏi trong popup
 export const questionPopup = {
     changeData: "Lưu lại những thay đổi?",
-    deleteDataBegin: "Bạn có thực sự muốn xoá < ",
-    deleteDataEnd:" > không?",
+    deleteDataBegin: "Bạn có muốn xoá Nhân viên <",
+    deleteDataEnd:"> không?",
     deleteMultipleData: "Các dữ liệu bạn đang chọn sẽ bị xoá."
 }
 
@@ -451,8 +451,8 @@ export const titleExplain ={
 
 //chú thích phím tắt cho các nút trong form
 export const buttonDetailExplain = {
-    Cancel: "ESC",
-    Save: "Ctrl+Enter",
+    cancel: "ESC",
+    save: "Ctrl+Enter",
     saveAndAdd:"Ctrl+Shift+S"
 }
 
@@ -460,4 +460,13 @@ export const buttonDetailExplain = {
 export const headerText = {
     companyName: "CÔNG TY TNHH SẢN XUẤT - THƯƠNG MẠI - DỊCH VỤ QUI PHÚC",
     userName: "Nguyễn Văn Mạnh"
+}
+
+// Title icon
+export const titleIcon = {
+    export: "Xuất khẩu",
+    close: "Đóng",
+    reload: "Nạp lại dữ liệu",
+    next: "Trang sau",
+    previos: "Trang trước"
 }

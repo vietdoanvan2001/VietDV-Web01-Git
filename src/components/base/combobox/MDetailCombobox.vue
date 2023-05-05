@@ -6,7 +6,7 @@
   >
     <div class="detail-combobox__searchField">
       <input
-        :value="inputValue!='' ? inputValue : (inputChanged?inputValue: getValue(valueID))"
+        :value="inputValue!='' ? inputValue : (inputChanged?inputValue: getValue(this.valueIdData))"
         @focus="focusIn"
         @focusout="focusOut($event)"
         @input="searchValue($event)"
@@ -108,7 +108,10 @@ export default {
     isDuplicateEmployee: Boolean
   },
   created() {
-    this.getDepartmentData();
+    // this.getDepartmentData();
+    // this.valueIdData = this.valueID
+    // console.log(this.valueIdData);
+    this.loadValueCombobox();
   },
   mounted() {
     this.$nextTick(function () {
@@ -137,7 +140,8 @@ export default {
       keyCodeName:keyCodeName,
       warningText: warningTxt,
       isFocus: false,
-      inputChanged: false
+      inputChanged: false,
+      valueIdData: this.valueID
     };
   },
   watch: {
@@ -196,6 +200,15 @@ export default {
     },
   },
   methods: {
+    /**
+     * Load dữ liệu vào ô input của combobox
+     * author: VietDV(4/3/2023)
+     */
+    loadValueCombobox: async function(){
+      await this.getDepartmentData();
+      this.valueIdData = this.valueID;
+    },
+
     /**
      * Sự kiện click vào nút dropdown
      * author: VietDV(3/3/2023)
@@ -368,17 +381,14 @@ export default {
       } 
       //Nhấn enter
       else if (event.keyCode == this.keyCodeName.Enter) {
-        this.activeOption[this.indexSelected] = true;
-        this.inputValue = this.searchData[this.indexSelected].DepartmentName;
-        this.$emit("updateValue", this.searchData[this.indexSelected].DepartmentId);
-        this.closeOption()
+        this.selectedItem(this.searchData[this.indexSelected], this.indexSelected)
       } 
       //Nhấn tab
       else if (event.keyCode == this.keyCodeName.Tab) {
-        this.activeOption[this.indexSelected] = true;
+        // this.activeOption[this.indexSelected] = true;
+        // console.log(this.searchData[this.indexSelected]);
         if(typeof this.searchData[this.indexSelected] !== 'undefined'){
-          this.inputValue = this.searchData[this.indexSelected].DepartmentName;
-          this.$emit("updateValue", this.searchData[this.indexSelected].DepartmentId);
+          this.selectedItem(this.searchData[this.indexSelected], this.indexSelected)
         }
         else{
           this.inputValue = ''

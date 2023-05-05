@@ -7,21 +7,22 @@
             ></m-combobox>
             <div class="page-range"><span style="font-family: Notosans-bold;">{{ beginData }}</span> - <span style="font-family: Notosans-bold;">{{ endData }}</span> {{ pagingText.record }}</div>
             <div class="page-number">
-                <div class="pre-button" @click="previousPage" :class="canBack?'':'disable-button'"></div>
-                <div class="next-button" @click="nextPage" :class="canNext?'':'disable-button'"></div>
+                <div :title=titleIcon.previos class="pre-button" @click="previousPage" :class="canBack?'':'disable-button'"></div>
+                <div :title=titleIcon.next class="next-button" @click="nextPage" :class="canNext?'':'disable-button'"></div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import{pagingText} from '@/js/resources.js'
+import{pagingText,titleIcon} from '@/js/resources.js'
 export default {
     data() {
         return {
             canNext:true,
             canBack: false,
-            pagingText:pagingText
+            pagingText:pagingText,
+            titleIcon:titleIcon
         }
     },
     watch:{
@@ -119,7 +120,7 @@ export default {
         //author: VietDV(18/3/2023)
         nextPage(){
             if(this.canNext){
-                this.$emit("changeOffSet",this.endData-1);
+                this.$emit("changeOffSet",this.endData);
             }
 
         },

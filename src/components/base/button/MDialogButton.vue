@@ -11,4 +11,7 @@ export default {
 
 <style>
     @import url(@/css/main.css);
+    .dialogButton:focus{
+      background-color: #157502;
+    }
 </style>
