@@ -1,12 +1,11 @@
 <template>
     <DxDropDownBox
         v-model:value="params.MISACode"
-        v-model:opened="isTreeBoxOpened"
         :show-clear-button="true"
         :data-source="treeDataSource"
         value-expr="MISACode"
         display-expr="DepartmentName"
-        :placeholder="placeholderInput.allDepartment"
+        :placeholder="$t('placeholderInput.allDepartment')"
         :width="318"
     >
         <template #content="{ data }">
@@ -14,13 +13,14 @@
             :ref="treeViewRefName"
             :data-source="treeDataSource"
             :select-by-click="true"
+            :select-nodes-recursive="false"
+            expandedExpr="Expanded"
             data-structure="plain"
             key-expr="MISACode"
             parent-id-expr="ParentId"
-            selection-mode="single"
+            selection-mode="multiple"
             display-expr="DepartmentName"
             @item-selection-changed="changeDepartment($event)"
-            @item-click="onTreeItemClick($event)"
         />
         <div style="display: none;">{{ data }}</div>
         </template>
@@ -40,6 +40,7 @@ import {
         DxDropDownBox,DxTreeView
     },
     props:{
+        //params filter trang
         paramsData: {}
     },
     created() {
@@ -93,7 +94,7 @@ import {
          * author: VietDV(24/4/2023)
          */
         onTreeItemClick() {
-            this.isTreeBoxOpened = false;
+            this.isTreeBoxOpened = true;
         },
     },
   }

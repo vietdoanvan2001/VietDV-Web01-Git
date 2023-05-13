@@ -6,6 +6,7 @@
 
 #app > div.content > div > div.content__body > div.content__body--function > div.content__function--right > button > div > div > div.dx-dropdowneditor-input-wrapper.dx-selectbox-container > div > div.dx-texteditor-input-container > input{
     font-weight: 700;
+    cursor: pointer;
 }
 
 #app > div.content > div > div.content__body > div.content__body--function > div.content__function--right > button > div > div > div.dx-dropdowneditor-input-wrapper.dx-selectbox-container > div > div.dx-texteditor-buttons-container > div.dx-widget.dx-button-mode-contained.dx-button-normal.dx-dropdowneditor-button > div > div::before{

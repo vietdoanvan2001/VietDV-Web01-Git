@@ -2,7 +2,7 @@
   <div class="table__layer">
       <div class="selection-table__content">
           <div class="selection-table__header">
-            <div class="selection-table__header--title">{{ contentTitle.selectionTable }}</div>
+            <div class="selection-table__header--title">{{ $t('contentTitle.selectionTable') }}</div>
             <div class="icon">
               <div class="selection-table__header--icon" id="close" @click="closeTable"></div>
               <DxTooltip
@@ -11,7 +11,7 @@
                 show-event="mouseenter"
                 hide-event="mouseleave"
             >
-                {{ titleIcon.close }}
+                {{ $t('titleIcon.close') }}
             </DxTooltip>
             </div>
           </div>
@@ -29,8 +29,8 @@
                 >
                 </department-dropdown>
 
-                <div v-if="selectedRecord.length" style="padding-left: 16px;">{{ textButton.selected }} <span style="font-weight: 600;">{{ selectedRecord.length }}</span></div>
-                <span v-if="selectedRecord.length" style="cursor: pointer; color: red; margin:0 24px;" @click="uncheckedSelectRows">{{ textButton.unchecked }}</span>
+                <div v-if="selectedRecord.length" style="padding-left: 16px;">{{ $t('textButton.selected') }} <span style="font-weight: 600;">{{ selectedRecord.length }}</span></div>
+                <span v-if="selectedRecord.length" style="cursor: pointer; color: red; margin:0 24px;" @click="uncheckedSelectRows">{{ $t('textButton.unchecked') }}</span>
               </div>
               <div class="selection-table__body--content">
                 <m-table
@@ -56,14 +56,15 @@
           <div class="selection-table__footer">
             <DxButton
               class="m-table-sub-button mgr_8"
-              :text="textButton.cancel"
+              :text="$t('textButton.cancel')"
               type="normal"
               @click="closeTable"
             />
             
             <DxButton
+              :style="selectedRecord.length>0?'':'opacity:0.4; cursor:default'"
               class="m-table-button"
-              :text="textButton.select"
+              :text="$t('textButton.select')"
               type="normal"
               @click="selectEmployee"
             />
@@ -77,6 +78,7 @@ import {contentTitle,placeholderInput,employeeSelectionTableTitle,textButton,tit
 import DxButton from "devextreme-vue/button";
 import { valueDefault } from "../js/enum.js";
 import { DxTooltip } from 'devextreme-vue/tooltip';
+import { Resource } from '@/js/language';
 
 
 import {
@@ -106,20 +108,31 @@ export default {
             },
             immediate: true,
             deep: true,
+        },
+        '$i18n.locale': {
+        handler() {
+           if(this.$i18n.locale == "vi"){
+            this.employeeSelectionTableTitleClone = JSON.parse(JSON.stringify(Resource.messages.vi.employeeSelectionTableTitle))
+           }else{
+            this.employeeSelectionTableTitleClone = JSON.parse(JSON.stringify(Resource.messages.eng.employeeSelectionTableTitle))
+           }
+        },
+        deep: true,
+        immediate: true
         }
     },
   data() {
     return {
       contentTitle:contentTitle,
       placeholderInput:placeholderInput,
-      employeeSelectionTableTitle: employeeSelectionTableTitle,
+      employeeSelectionTableTitle: Resource.messages.eng.employeeSelectionTableTitle,
       titleIcon:titleIcon,
       textButton:textButton,
       employeeDataSource:[],
       treeViewRefName: 'tree-view',
       isTreeBoxOpened: false,
       treeBoxValue: null,
-      employeeSelectionTableTitleClone: JSON.parse(JSON.stringify(employeeSelectionTableTitle)),
+      employeeSelectionTableTitleClone: JSON.parse(JSON.stringify(Resource.messages.vi.employeeSelectionTableTitle)),
       params:{
         keyWord:"",
         MISACode:"",
@@ -159,6 +172,7 @@ export default {
      */
     getEmployeeData: async function(){
       try {
+        this.$emit("showLoadingLayer")
         const res = await getEmployeeFilter(this.params);
         if (res.status == 200) {
           this.employeeDataSource = [];
@@ -175,10 +189,12 @@ export default {
           // console.log(this.employeeDataSource.length);
           // console.log(this.data.TotalRecord);
           this.data.TotalRecord -= removeRecord;
+          this.$emit("hideLoadingLayer")
         }
       } catch (error) {
         console.log(error);
         this.showLoading = false;
+        this.$emit("hideLoadingLayer")
       }
     },
 
@@ -251,8 +267,10 @@ export default {
      * author: VietDV(2/5/2023)
      */
     selectEmployee(){
-      this.$emit("selectedEmployee",this.selectedRecord);
-      this.$emit("closeTable");
+      if(this.selectedRecord.length>0){
+        this.$emit("selectedEmployee",this.selectedRecord);
+        this.$emit("closeTable");
+      }
     }
   },
 }

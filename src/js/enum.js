@@ -28,3 +28,6 @@ export const status = {
         accept : 2,
         deny : 3
 }
+
+//Số cột trong bảng
+export const numberPinCulumn = 16;

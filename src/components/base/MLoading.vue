@@ -19,7 +19,7 @@ export default {
     opacity: 0.4;
     width: 100%;
     height: 100vh;
-    z-index: 150;
+    z-index: 1500;
 }
 .loading-icon{
     
@@ -31,7 +31,7 @@ export default {
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 160;
+    z-index: 1600;
     width: 48px;
     height: 48px;
     border: 5px solid #FFF;

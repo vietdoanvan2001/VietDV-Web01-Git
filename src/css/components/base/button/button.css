@@ -47,6 +47,11 @@
 .m-table-button:focus{
     background-color: #e35102;
     border: 1px solid #e35102;
+    color: #fff !important;
+}
+
+.dx-button-mode-contained.dx-state-active{
+    color: #fff !important;
 }
 
 #app > div.content > div.detail__container > div.detail__header > div.content__header--right > div > div > i{

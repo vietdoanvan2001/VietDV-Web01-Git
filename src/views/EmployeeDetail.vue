@@ -5,6 +5,8 @@
   @selectedEmployee="selectedEmployee"
   @closeTable="closeTable"
   @submit="onFormSubmit($event)"
+  @showLoadingLayer="showLoadingLayer"
+  @hideLoadingLayer="hideLoadingLayer"
   ></employee-selectionTable>
   <form
         action=""
@@ -12,6 +14,39 @@
         @submit="onSubmit"
         @submit.prevent="onSubmit"
       >
+  <div class="detail-dialog-layer" v-if="isShowDialog">
+    <div class="detail-dialog__background"></div>
+    <div class="detail-dialog">
+      <div class="detail-dialog__header">
+        <div class="detail-dialog__header--title">{{ $t('dialogText.notifyTitle') }}</div>
+        <div class="detail-dialog__header--button" @click="hideDialog">
+        </div>
+      </div>
+      <div class="detail-dialog__body">{{ $t('dialogText.changedMessage') }}</div>
+      <div class="detail-dialog__footer">
+        <DxButton
+              class="m-sub-button mgr_8"
+              :text="$t('textButton.cancel')"
+              type="normal"
+              @click="hideDialog"
+            />
+          <DxButton
+            class="m-sub-button mgr_8"
+            :text="$t('textButton.unsave')"
+            type="normal"
+            @click="hide"
+          />
+        <DxButton
+          class="m-button w-80"
+          ref="saveBtn"
+          :text="$t('textButton.save')"
+          :use-submit-behavior="true"
+          @click="saveData"
+          type="normal"
+        />
+      </div>
+    </div>
+  </div>
   <div class="detail__container">
     <div class="detail__header">
       <div class="detail__header--left">
@@ -22,7 +57,7 @@
                 show-event="mouseenter"
                 hide-event="mouseleave"
             >
-                {{ titleIcon.back }}
+                {{ $t('titleIcon.back') }}
             </DxTooltip>
         <div class="detail__header--title">
           {{ formTitle }}
@@ -33,14 +68,14 @@
       >
         <DxButton
               class="m-sub-button mgr_8"
-              :text="textButton.cancel"
+              :text="$t('textButton.cancel')"
               type="normal"
               @click="hideDetail"
             />
         <DxButton
           class="m-button w-80"
           ref="saveBtn"
-          :text="textButton.save"
+          :text="$t('textButton.save')"
           :use-submit-behavior="true"
           @click="saveData"
           type="normal"
@@ -52,7 +87,7 @@
         <DxButton
           icon="edit"
           class="m-button w-86"
-          :text="textButton.fix"
+          :text="$t('textButton.fix')"
           type="normal"
           @click="changeFixForm"
         />
@@ -65,7 +100,7 @@
             <div class="detail__form--left">
               <div class="detail__form--field">
                 <div class="detail__field--lable">
-                  {{ detailField.submitBy }}
+                  {{ $t('detailField.submitBy') }}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
 
@@ -81,10 +116,7 @@
                   v-model:value="employeeData.EmployeeId"
                   :readOnly="mode == formModeList.fix?true:false"
                   :searchEnabled="true"
-                  item-template="item"
-                  :onContentReady="selectboxEmployeeReady"
                   :searchExpr="['FullName','EmployeeCode']"
-                  :defer-rendering="true"
                   @selection-changed="getSubmitBy($event)"
                 >
                 <template #item="{ data }">
@@ -107,7 +139,7 @@
 
 
               <div class="detail__form--field">
-                <div class="detail__field--lable">{{ detailField.department }}</div>
+                <div class="detail__field--lable">{{ $t('detailField.department') }}</div>
                 <input class="detail-input"
                 readonly="true"
                   v-if="mode == formModeList.detail"
@@ -124,13 +156,13 @@
 
               <div class="detail__form--field">
                 <div class="detail__field--lable">
-                  {{ detailField.submitDate }}
+                  {{ $t('detailField.submitDate') }}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
                 <input class="detail-input"
                 readonly="true"
                   v-if="mode == formModeList.detail"
-                  :value="employeeData.ApplyDate"
+                  :value="formatDate(employeeData.ApplyDate)"
                 />
                 <DxDateBox
                 v-if="mode == formModeList.addNew || mode == formModeList.fix"
@@ -151,13 +183,13 @@
 
               <div class="detail__form--field">
                 <div class="detail__field--lable">
-                  {{ detailField.overTimeFrom }}
+                  {{ $t('detailField.overTimeFrom') }}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
                 <input class="detail-input"
                 readonly="true"
                   v-if="mode == formModeList.detail"
-                  :value="employeeData.FromDate"
+                  :value="formatDate(employeeData.FromDate)"
                 />
                 <DxDateBox
                 v-if="mode == formModeList.addNew || mode == formModeList.fix"
@@ -176,11 +208,11 @@
 
 
               <div class="detail__form--field">
-                <div class="detail__field--lable">{{ detailField.restTimeFrom }}</div>
+                <div class="detail__field--lable">{{ $t('detailField.restTimeFrom')}}</div>
                 <input class="detail-input"
                 readonly="true"
                   v-if="mode == formModeList.detail"
-                  :value="employeeData.BreakTimeFrom"
+                  :value="formatDate(employeeData.BreakTimeFrom)"
                 />
                 <DxDateBox
                 v-if="mode == formModeList.addNew || mode == formModeList.fix"
@@ -191,16 +223,24 @@
                   v-model:value="employeeData.BreakTimeFrom"
                   :applyButtonText="textButton.save"
                   :cancelButtonText="textButton.cancel"
-                />
+                >
+                <DxValidator>
+                  <DxRequiredRule v-if="employeeData.BreakTimeTo" :message="detailField.restTimeFrom+ ' ' + $t('validateMessage.requiredIf') + ' ' + detailField.restTimeTo "/>
+                  <DxRangeRule v-if="employeeData.BreakTimeFrom && employeeData.BreakTimeTo"
+                    :min="mode == formModeList.addNew?employeeData.FromDate:''"
+                    :message="detailField.restTimeFrom+ ' ' + validateMessage.min + ' ' + detailField.overTimeFrom"
+                  />
+                </DxValidator>
+              </DxDateBox>
               </div>
 
 
               <div class="detail__form--field">
-                <div class="detail__field--lable">{{ detailField.restTimeTo }}</div>
+                <div class="detail__field--lable">{{ $t('detailField.restTimeTo') }}</div>
                 <input class="detail-input"
                 readonly="true"
                   v-if="mode == formModeList.detail"
-                  :value="employeeData.BreakTimeTo"
+                  :value="formatDate(employeeData.BreakTimeTo)"
                 />
                 <DxDateBox
                 v-if="mode == formModeList.addNew || mode == formModeList.fix"
@@ -211,19 +251,28 @@
                   v-model:value="employeeData.BreakTimeTo"
                   :applyButtonText="textButton.save"
                   :cancelButtonText="textButton.cancel"
-                />
+                  @valueChanged="test"
+                >
+                <DxValidator>
+                  <DxRequiredRule v-if="employeeData.BreakTimeFrom" :message="detailField.restTimeTo+ ' ' + $t('validateMessage.requiredIf') + ' ' + detailField.restTimeFrom "/>
+                  <DxRangeRule v-if="employeeData.BreakTimeFrom && employeeData.BreakTimeTo"
+                    :min="employeeData.BreakTimeFrom?employeeData.BreakTimeFrom:''"
+                    :message="detailField.restTimeTo+ ' ' + validateMessage.min + ' ' + detailField.restTimeFrom"
+                  />
+                </DxValidator>
+              </DxDateBox>
               </div>
 
 
               <div class="detail__form--field">
                 <div class="detail__field--lable">
-                  {{ detailField.overTimeTo }}
+                  {{ $t('detailField.overTimeTo') }}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
                 <input class="detail-input"
                 readonly="true"
                   v-if="mode == formModeList.detail"
-                  :value="employeeData.ToDate"
+                  :value="formatDate(employeeData.ToDate)"
                 />
                 <DxDateBox
                 v-if="mode == formModeList.addNew || mode == formModeList.fix"
@@ -236,6 +285,10 @@
                 >
                 <DxValidator>
                   <DxRequiredRule :message="detailField.overTimeTo+' ' + validateMessage.required"/>
+                  <DxRangeRule
+                    :min="employeeData.BreakTimeTo?employeeData.BreakTimeTo:''"
+                    :message="detailField.overTimeTo+ ' ' + validateMessage.min + ' ' + detailField.restTimeTo"
+                  />
                 </DxValidator>
               </DxDateBox>
               </div>
@@ -243,7 +296,7 @@
 
               <div class="detail__form--field">
                 <div class="detail__field--lable">
-                  {{ detailField.overTimeCase }}
+                  {{ $t('detailField.overTimeCase') }}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
                 <input class="detail-input"
@@ -271,7 +324,7 @@
 
               <div class="detail__form--field">
                 <div class="detail__field--lable">
-                  {{ detailField.applicableCase }}
+                  {{ $t('detailField.applicableCase') }}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
                 <input class="detail-input"
@@ -301,7 +354,7 @@
             <div class="detail__form--right">
               <div class="detail__form--text-area">
                 <div class="detail__field--lable">
-                  {{ detailField.overTimeReason }}
+                  {{ $t('detailField.overTimeReason') }}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
                 <input class="detail-input"
@@ -324,7 +377,7 @@
 
               <div class="detail__form--field">
                 <div class="detail__field--lable">
-                  {{ detailField.confirmBy }}
+                  {{ $t('detailField.confirmBy') }}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
                 <input class="detail-input"
@@ -358,7 +411,7 @@
 
 
               <div class="detail__form--field">
-                <div class="detail__field--lable">{{ detailField.relatedPeople }}</div>
+                <div class="detail__field--lable">{{ $t('detailField.relatedPeople') }}</div>
                 <input class="detail-input"
                 readonly="true"
                   v-if="mode == formModeList.detail"
@@ -366,14 +419,16 @@
                 />
                 <DxTagBox
                   v-if="mode == formModeList.addNew || mode == formModeList.fix"
-                  id="status__combobox--id"
+                  id="tagbox"
                   class="detail__dropdown"
+                  :showSelectionControls="true"
                   :data-source="treeDataSource"
                   display-expr="FullName"
                   value-expr="EmployeeId"
                   placeholder=""
                   :searchEnabled="true"
                   :searchExpr="['FullName','EmployeeCode']"
+                  :showCheckBoxesMode="'none'"
                   v-model:value="relationshipIDs"
                   @value-changed="getRelationShipNames($event)"
                 >
@@ -390,7 +445,7 @@
 
               <div class="detail__form--field" id="test">
                 <div class="detail__field--lable">
-                  {{ detailField.status }}
+                  {{ $t('detailField.status')}}
                   <span :style="'color: red; margin-left: 2px;'">*</span>
                 </div>
                 <input class="detail-input"
@@ -422,20 +477,21 @@
             <div class="detail__list--header">
               <div class="detail__list--title">
                 {{ contentTitle.employeeList }}
-                <div v-if="selectedRecord.length" style="padding-left: 16px;">{{ textButton.selected }} <span style="font-weight: 600;">{{ selectedRecord.length }}</span></div>
-                <span v-if="selectedRecord.length" style="cursor: pointer; color: blue; margin:0 24px;" @click="uncheckedSelectRows">{{ textButton.unchecked }}</span>
-                <span v-if="selectedRecord.length" style="cursor: pointer; color: red;" @click="clearSelectRows">{{ textButton.clear }}</span>
+                <div v-if="selectedRecord.length" style="padding-left: 16px;">{{ $t('textButton.selected') }} <span style="font-weight: 600;">{{ selectedRecord.length }}</span></div>
+                <span v-if="selectedRecord.length" style="cursor: pointer; color: blue; margin:0 24px;" @click="uncheckedSelectRows">{{ $t('textButton.unchecked') }}</span>
+                <span v-if="selectedRecord.length" style="cursor: pointer; color: red;" @click="clearSelectRows">{{ $t('textButton.clear') }}</span>
               </div>
               <div class="detail__list--button" @click="opentTable" v-if="mode != formModeList.detail">
                 <div class="list__button--icon"></div>
                 <div class="list__button--text" 
-                :style="'color: #ec5504; font-weight:600'">{{ textButton.iconButton }}</div>
+                :style="'color: #ec5504; font-weight:600'">{{ $t('textButton.iconButton') }}</div>
               </div>
             </div>
             <DxTextBox
-            v-if="mode == formModeList.detail"
+            v-if="mode == formModeList.detail && employeeData.OvertimeEmployee.length && false"
               class="content__search-input"
-              :placeholder="placeholderInput.searchInput"
+              :placeholder="$t('placeholderInput.searchInput')"
+              @value-changed="changeKeyWord($event)"
             >
               <i class="dx-icon-search"></i>
             </DxTextBox>
@@ -450,36 +506,36 @@
                   @removeSelectedRecord="removeSelectedRecord"
                   @clearEmployee = "clearSelectedEmployee"
                 ></m-table>  
-              <div v-if="!employeeData.OvertimeEmployee.length" style="padding-bottom: 24px; font-style: italic; color: #9fa4b4; font-size: 14px;">{{ placeholderInput.noData }}</div>
+              <div v-if="!employeeData.OvertimeEmployee.length" style="padding-bottom: 24px; font-style: italic; color: #9fa4b4; font-size: 14px;">{{ $t('placeholderInput.noData') }}</div>
             </div>
             <div class="detail_list--footer" v-if="employeeData.OvertimeEmployee.length">
-              <div style="padding-left: 16px;">{{ textButton.selectedAmount }} <span style="font-weight: 600;">{{ employeeData.OvertimeEmployee.length }}</span></div>  
+              <div style="padding-left: 16px;">{{ $t('textButton.selectedAmount') }} <span style="font-weight: 600;">{{ employeeData.OvertimeEmployee.length }}</span></div>  
             </div>
           </div>
         </div>
       <div class="detail__content--note">
           <div class="note__title">
-            {{ pagingText.title }}
+            {{ $t('pagingText.title') }}
           </div>
           <div class="note__content">
             <div class="note__content--avatar">ĐV</div>
             <div class="note__content--textfield">
               <input type="text" class="note__input"
-                :placeholder="placeholderInput.note"
+                :placeholder="$t('placeholderInput.note')"
               >
               <div class="note__button">
                 <div class="note__icon"></div>
               </div>
             </div>
           </div>
-          <div class="note__text"><span :style="'opacity:0.5'">{{ pagingText.text }}</span><span :style="'color:#ec5504; font-weight: 600; margin-left: 4px;'">{{ pagingText.cancel }}</span></div>
+          <div class="note__text"><span :style="'opacity:0.5'">{{ $t('pagingText.text') }}</span><span :style="'color:#ec5504; font-weight: 600; margin-left: 4px;'">{{ $t('pagingText.cancel') }}</span></div>
           <div class="note__option">
             <div class="note__option--item" :style="'color: #ec5504; margin-left: 24px;'">
-              {{ pagingText.all }}
+              {{ $t('pagingText.all') }}
               <div class="item__border" ></div>
             </div>
-            <div class="note__option--item">{{ pagingText.title }}</div>
-            <div class="note__option--item">{{ pagingText.history }}</div>
+            <div class="note__option--item">{{ $t('pagingText.title') }}</div>
+            <div class="note__option--item">{{ $t('pagingText.history') }}</div>
           </div>
         </div>
     </div>
@@ -489,7 +545,6 @@
 
 <script>
 import {
-  contentTitle,
   textButton,
   placeholderInput,
   pagingText,
@@ -502,6 +557,8 @@ import {
   employeeSelectionTableTitle,
   dialogText
 } from '@/js/resource.js'
+import { Resource } from '@/js/language';
+
 import {formMode,toastStatus} from '@/js/enum.js'
 import {DxButton, DxTextBoxButton} from "devextreme-vue/button";
 import DxSelectBox from "devextreme-vue/select-box";
@@ -513,11 +570,13 @@ import notify from "devextreme/ui/notify";
 import { locale } from 'devextreme/localization';
 import viMessages from 'devextreme/localization/messages/vi.json';
 import { custom } from 'devextreme/ui/dialog';
-
+// import notify from "devextreme/ui/notify";
+import { format } from 'date-fns';
 
 import {
   DxValidator,
-  DxRequiredRule
+  DxRequiredRule,
+  DxRangeRule
 } from 'devextreme-vue/validator';
 import {
   getAllEmployees
@@ -542,6 +601,7 @@ export default {
     DxTextArea,
     DxDateBox, 
     DxDataGrid,
+    DxRangeRule,
   DxColumn,
   DxPaging,
   DxSelection,
@@ -552,20 +612,25 @@ export default {
   locale('vi', viMessages);
     if(!this.employeeData.OvertimeEmployee){
         this.employeeData.OvertimeEmployee = []
+        this.employeeDataClone.OvertimeEmployee = []
     }
     if(!this.employeeData.ApplyDate){
       this.employeeData.ApplyDate = new Date()
+      this.employeeDataClone.ApplyDate = new Date()
     }
     if(!this.employeeData.FromDate){
       const now = new Date();
       this.employeeData.FromDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      this.employeeDataClone.FromDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
     }
     if(!this.employeeData.ToDate){
       const now = new Date();
       this.employeeData.ToDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      this.employeeDataClone.ToDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
     }
     if(!this.employeeData.Status){
         this.employeeData.Status = 1
+        this.employeeDataClone.Status = 1
     }
     this.mode = this.formMode
     this.getEmployeeData();
@@ -573,15 +638,27 @@ export default {
     if(this.idDataProp){
       this.getDataById(this.idDataProp)
     }
-    
-    if(this.formMode == this.formModeList.addNew){
-      this.formTitle =  this.contentTitle.title_add
-    }
-    else if(this.formMode == this.formModeList.detail){
-      this.formTitle = this.contentTitle.title_detail
+    if(this.$i18n.locale == "eng"){
+      if(this.formMode == this.formModeList.addNew){
+        this.formTitle =  Resource.messages.eng.contentTitle.title_add
+      }
+      else if(this.formMode == this.formModeList.detail){
+        this.formTitle =  Resource.messages.eng.contentTitle.title_detail
+      }
+      else{
+        this.formTitle = Resource.messages.eng.contentTitle.title_fix
+      }
     }
     else{
-      this.formTitle = this.contentTitle.title_fix
+      if(this.formMode == this.formModeList.addNew){
+        this.formTitle =  Resource.messages.vi.contentTitle.title_add
+      }
+      else if(this.formMode == this.formModeList.detail){
+        this.formTitle =  Resource.messages.vi.contentTitle.title_detail
+      }
+      else{
+        this.formTitle = Resource.messages.vi.contentTitle.title_fix
+      }
     }
   },
   props:{
@@ -603,13 +680,54 @@ export default {
       },
       deep: true,
       immediate: true
-    }
+    },
+    "employees.length": {
+      handler() {
+        this.treeDataSource = new DataSource({
+            store: {
+              type: 'array',
+              key: 'EmployeeID',
+              data: this.employees
+            },
+            paginate: true,
+            pageSize: 10
+          })
+          //Loại bỏ trường rỗng trong object
+          for(let item in this.treeDataSource){
+            for (let prop in this.treeDataSource[item]) {
+                    if ([null, undefined, "", {}].includes(this.treeDataSource[item][prop])) {
+                      delete this.treeDataSource[item][prop];
+                    }
+              }
+          }
+      },
+      deep: true,
+      immediate: true
+    },
+    '$i18n.locale': {
+        handler() {
+           if(this.$i18n.locale == "vi"){
+              this.employeeSelectionTableTitle = Resource.messages.vi.employeeSelectionTableTitle
+              this.contentTitle = Resource.messages.vi.contentTitle
+              this.statusSelection = Resource.messages.vi.statusSelectionForm
+           }else{
+              this.employeeSelectionTableTitle = Resource.messages.eng.employeeSelectionTableTitle
+              this.contentTitle = Resource.messages.eng.contentTitle,
+              this.statusSelection = Resource.messages.eng.statusSelectionForm
+           }
+        },
+        deep: true,
+        immediate: true
+        }
   },
   data() {
+    const currentDate = new Date();
     return {
-      employeeSelectionTableTitle:employeeSelectionTableTitle,
+      isShowDialog:false,
+      employeeClone:{},
+      employeeSelectionTableTitle:Resource.messages.vi.employeeSelectionTableTitle,
       titleIcon:titleIcon,
-      contentTitle:contentTitle,
+      contentTitle:Resource.messages.vi.contentTitle,
       textButton:textButton,
       formModeList:formMode,
       mode:Number,
@@ -617,9 +735,10 @@ export default {
       pagingText:pagingText,
       formTitle: "",
       detailField:detailField,
-      statusSelection:statusSelectionForm,
+      statusSelection:Resource.messages.vi.statusSelectionForm,
       showTable: false,
       employeeData:{},
+      employeeDataClone:{},
       validateMessage:validateMessage,
       caseSelection:caseSelection,
       overTimeSelection:overTimeSelection,
@@ -634,20 +753,65 @@ export default {
             paginate: true,
             pageSize: 10
           }),
-      passwordButton: {
-        icon: "save",
-        type: 'default',
-        onClick: () => {
-          this.passwordMode = this.passwordMode === 'text' ? 'password' : 'text';
-        },
-      },
       departmentName:"",
       relationShipNames:[],
       relationshipIDs:[],
-      isReload:false
+      isReload:false,
+      employees: [],
+      maxDate: new Date(currentDate.setFullYear(currentDate.getFullYear() + 9999)),
     }
   },
   methods: {
+    /**
+     * Ẩn thông báo
+     * author: VietDV(5/5/2023)
+     */
+    hideDialog(){
+      this.isShowDialog = false
+    },
+    /**
+     * Emit lên component cha gọi sự kiện ẩn form
+     * author: VietDV(5/5/2023)
+     */
+    hide(){
+      this.$emit("hideDetail");
+    },
+    /**
+     * Format hàng tháng dd/MM/yyyy
+     * author: VietDV(28/4/2023)
+     * @param {*} value 
+     */
+    formatDate: function(value) {
+      if (!value) return ''
+      const date = new Date(value)
+      const day = date.getDate().toString().padStart(2, '0')
+      const month = (date.getMonth() + 1).toString().padStart(2, '0')
+      const year = date.getFullYear()
+      const hours = date.getHours().toString().padStart(2, '0')
+      const minutes = date.getMinutes().toString().padStart(2, '0')
+      return `${day}/${month}/${year} ${hours}:${minutes}`
+    },
+    /** 
+     * tìm kiếm nhân viên làm thêm
+     * author: VietDV(28/4/2023)
+     * */ 
+    changeKeyWord(data){
+      console.log(data.value);  
+    },
+    /**
+     * Hiển thị loading layer
+     * author: VietDV(8/5/2023)
+     */
+    showLoadingLayer(){
+      this.$emit("showLoading")
+    },
+    /**
+     * ẩn loading layer
+     * author: VietDV(8/5/2023)
+     */
+     hideLoadingLayer(){
+      this.$emit("hideLoading")
+    },
     /**
      * focus vào ô đầu tiên của bảng detail
      * author: VietDV(5/5/2023)
@@ -670,7 +834,7 @@ export default {
      * author: VietDV(28/4/2023)
      */
     getSelectedOption() {
-      let selectedOption = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.ApprovalId)?.FullName;
+      let selectedOption = this.employees.find(option => option.EmployeeId === this.employeeData.ApprovalId)?.FullName;
       this.employeeData.ApprovalName = selectedOption;
     },
 
@@ -680,10 +844,10 @@ export default {
      * @param {*} e 
      */
     getRelationShipNames(){
-      
+      // debugger
       this.relationShipNames = [];
       this.relationshipIDs.forEach(id => {
-        let option = this.treeDataSource.find(option => option.EmployeeId === id);
+        let option = this.employees.find(option => option.EmployeeId === id);
         if (option) {
           this.relationShipNames.push(option.FullName);
         }
@@ -696,23 +860,27 @@ export default {
      * author: VietDV(28/4/2023)
      */
     getSubmitBy() {
-      let fullName = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.FullName;
-      let employeeCode = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.EmployeeCode;
-      let employeeId = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.EmployeeId;
-      let MISACode = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.MISACode;
-      let positionName = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.PositionName;
-      let positionId = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.PositionId;
-      let departmentName = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.DepartmentName;
-      let departmentId = this.treeDataSource.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.DepartmentId;
+      // debugger
+      if(this.treeDataSource._items.length>0){
+        let fullName = this.treeDataSource._items.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.FullName;
+        let employeeCode = this.treeDataSource._items.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.EmployeeCode;
+        let employeeId = this.treeDataSource._items.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.EmployeeId;
+        let MISACode = this.treeDataSource._items.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.MISACode;
+        let positionName = this.treeDataSource._items.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.PositionName;
+        let positionId = this.treeDataSource._items.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.PositionId;
+        let departmentName = this.treeDataSource._items.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.DepartmentName;
+        let departmentId = this.treeDataSource._items.find(option => option.EmployeeId === this.employeeData.EmployeeId)?.DepartmentId;
+        
+        this.employeeData.FullName = fullName,
+        this.employeeData.EmployeeCode = employeeCode,
+        this.employeeData.EmployeeId = employeeId,
+        this.employeeData.MISACode = MISACode,
+        this.employeeData.PositionId = positionId,
+        this.employeeData.PositionName = positionName,
+        this.employeeData.DepartmentId = departmentId,
+        this.employeeData.DepartmentName = departmentName
+      }
       
-      this.employeeData.FullName = fullName,
-      this.employeeData.EmployeeCode = employeeCode,
-      this.employeeData.EmployeeId = employeeId,
-      this.employeeData.MISACode = MISACode,
-      this.employeeData.PositionId = positionId,
-      this.employeeData.PositionName = positionName,
-      this.employeeData.DepartmentId = departmentId,
-      this.employeeData.DepartmentName = departmentName
     },
 
     /**
@@ -720,53 +888,23 @@ export default {
      * author: VietDV(17/4/2023)
      */
      hideDetail(){
-      this.$nextTick(function() {
-        // tạo dialog
-            let myDialog = custom({
-                title: dialogText.notifyTitle,
-                messageHtml: dialogText.changedMessage,
-                showCloseButton: true,
-                buttons: [{
-                  className: "cancel-button",
-                    text: textButton.cancel,
-                    onClick: (e) => {
-                        return { buttonText: e.component.option("text") }
-                    }
-                },
-                {
-                  className: "cancel-button",
-                    text: textButton.unsave,
-                    onClick: (e) => {
-                        return { buttonText: e.component.option("text") }
-                    }
-                },
-                {
-                    text: textButton.save,
-                    type: toastStatus.default,
-                    onClick: (e) => {
-                        return { buttonText: e.component.option("text") }
-                    }
-                },
-                ]
-            });
-            //Hiển thị dialog và bắt các sự kiện
-            myDialog.show().then(async (dialogResult) => {
-              if (dialogResult.buttonText === textButton.save) {
-                // this.saveData();
-                // console.log(this.$refs['saveBtn'].instance.click());
-                // this.$refs['saveBtn'].instance.click()
-                const a = document.getSelection(this.$refs.saveBtn.instance._$element);
-                a.onClick();
-                
-              }
-              else if(dialogResult.buttonText === textButton.unsave){
-                this.$emit("hideDetail");
-              } 
-              else {
-                return;
-              }
-            });
-        })
+      //Loại bỏ trường rỗng trong object
+      for (let prop in this.employeeData) {
+        if ([null, undefined, "", {}].includes(this.employeeData[prop])) {
+          delete this.employeeData[prop];
+        }
+      }
+      for (let prop in this.employeeDataClone) {
+        if ([null, undefined, "", {}].includes(this.employeeDataClone[prop])) {
+          delete this.employeeDataClone[prop];
+        }
+      }
+      if(JSON.stringify(this.employeeData) != JSON.stringify(this.employeeDataClone)){
+       this.isShowDialog = true;
+      }
+      else{
+        this.$emit("hideDetail");
+      }
     },
 
     /**
@@ -798,9 +936,15 @@ export default {
       }, 0);
     },
 
+    /**
+     * thêm nhân viên làm thêm vào mảng
+     * author: VietDV(5/5/2023)
+     * @param {*} listEmployee 
+     */
     selectedEmployee(listEmployee){
       listEmployee.forEach(element => {
         this.employeeData.OvertimeEmployee.push(element);
+        // this.employeeClone.push(element)
       }
       );
     },
@@ -811,7 +955,7 @@ export default {
      * @param {*} e 
      */
      onFormSubmit(e){
-      debugger
+      // debugger
       e.preventDefault();
      },
     /**
@@ -820,12 +964,19 @@ export default {
      * @param {selectedID} id
      */
      getDataById: async function (id) {
+      // debugger
       try {
+        this.$emit("showLoading")
         const res = await getOverTimeById(id);
         this.employeeData = res.data;
-        console.log(this.employeeData);
-        
-        this.relationshipIDs = this.employeeData.RelationShipIDs.split(",");
+        this.relationshipIDs = this.employeeData.RelationShipIDs?this.employeeData.RelationShipIDs.split(","):[];
+        this.employeeData.ApplyDate? this.employeeData.ApplyDate = new Date(this.employeeData.ApplyDate): '';
+        this.employeeData.BreakTimeFrom? this.employeeData.BreakTimeFrom = new Date(this.employeeData.BreakTimeFrom): '';
+        this.employeeData.BreakTimeTo? this.employeeData.BreakTimeTo = new Date(this.employeeData.BreakTimeTo): '';
+        this.employeeData.FromDate? this.employeeData.FromDate = new Date(this.employeeData.FromDate): '';
+        this.employeeData.ToDate? this.employeeData.ToDate = new Date(this.employeeData.ToDate): '';
+        this.employeeDataClone = {...this.employeeData} ;
+        this.$emit("hideLoading")
       } catch (error) {
         console.log(error);
       }
@@ -838,29 +989,16 @@ export default {
      */
      getEmployeeData: async function () {
       try {
+        // debugger
+        this.$emit("showLoading")
         const res = await getAllEmployees();
         if(res != null){
-          this.treeDataSource = new DataSource({
-            store: {
-              type: 'array',
-              key: 'EmployeeID',
-              data: res.data
-            },
-            paginate: true,
-            pageSize: 10
-          })
-          //Loại bỏ trường rỗng trong object
-          for(let item in this.treeDataSource){
-            for (let prop in this.treeDataSource[item]) {
-                    if ([null, undefined, "", {}].includes(this.treeDataSource[item][prop])) {
-                      delete this.treeDataSource[item][prop];
-                    }
-              }
-          }
-          
+          this.employees = res.data;
+          this.$emit("hideLoading")
         }
       } catch (error) {
         console.log(error);
+        this.$emit("hideLoading")
       }
     },
 
@@ -879,11 +1017,47 @@ export default {
           this.$emit("reloadData");
           this.$emit("hideDetail");
         } else {
+          this.$nextTick(function() {
+        // tạo dialog
+            let myDialog = custom({
+                title: dialogText.warningTitlte,
+                messageHtml: "lỗi",
+                showCloseButton: true,
+                buttons: [{
+                  className: "cancel-button",
+                  text: "Đóng",
+                    type: toastStatus.default,
+                    onClick: (e) => {
+                        return { buttonText: e.component.option("text") }
+                    }
+                }
+                ]
+            })
+            myDialog.show();
+          });
           this.notifyMsg(toastStatus.error, dialogText.addFail);
           console.log("error");
           this.$emit("hideLoading");
         }
       } catch (error) {
+        this.$nextTick(function() {
+        // tạo dialog
+            let myDialog = custom({
+                title: dialogText.warningTitlte,
+                messageHtml: error.response.data[0].UserMsg,
+                showCloseButton: true,
+                buttons: [{
+                  className: "cancel-button",
+                  text: "Đóng",
+                    type: toastStatus.default,
+                    onClick: (e) => {
+                        return { buttonText: e.component.option("text") }
+                    }
+                }
+                ]
+            })
+            myDialog.show();
+          });
         this.notifyMsg(toastStatus.error, dialogText.addFail);
         console.log(error);
         this.$emit("hideLoading");
@@ -913,6 +1087,24 @@ export default {
           
         }
       } catch (error) {
+        this.$nextTick(function() {
+        // tạo dialog
+            let myDialog = custom({
+                title: dialogText.warningTitlte,
+                messageHtml: error.response.data[0].UserMsg,
+                showCloseButton: true,
+                buttons: [{
+                  className: "cancel-button",
+                  text: "Đóng",
+                    type: toastStatus.default,
+                    onClick: (e) => {
+                        return { buttonText: e.component.option("text") }
+                    }
+                }
+                ]
+            })
+            myDialog.show();
+          });
         this.notifyMsg(toastStatus.error, dialogText.updateFail);
         console.log(error);
         this.$emit("hideLoading");
@@ -924,20 +1116,43 @@ export default {
      * author: VietDV(28/4/2023)
      */
     saveData(e){
-      console.log(e);
-      this.employeeData.RelationShipIDs = this.relationshipIDs.toString();
-      //Check validate
-      setTimeout(() => {
-        //Nếu hết lỗi thì thực hiện gửi form
-        if (e.validationGroup._validationInfo.result.brokenRules.length === 0) {
-          if(this.mode == this.formModeList.addNew){
-            this.postData(this.employeeData);
-          }
-          else{
-            this.updateOverTime(this.employeeData.OverTimeId,this.employeeData);
-          }
-        }
-      }, 0);
+      this.isShowDialog = false;
+      if(this.employeeData.OvertimeEmployee.length == 0){
+        this.$nextTick(function() {
+        // tạo dialog
+            let myDialog = custom({
+                title: dialogText.warningTitlte,
+                messageHtml:"Bạn phải chọn ít nhất 1 nhân viên làm thêm trên đơn. Vui lòng kiểm tra lại.",
+                showCloseButton: true,
+                buttons: [{
+                  className: "cancel-button",
+                    text: "Đóng",
+                    type: toastStatus.default,
+                    onClick: (e) => {
+                        return { buttonText: e.component.option("text") }
+                    }
+                }
+                ]
+            })
+            myDialog.show();
+          });
+      }else{
+        console.log("oke");
+        
+        this.employeeData.RelationShipIDs = this.relationshipIDs.toString();
+        //Check validate
+        setTimeout(() => {
+          //Nếu hết lỗi thì thực hiện gửi form
+          // if (e.validationGroup._validationInfo.result.brokenRules.length === 0) {
+            if(this.mode == this.formModeList.addNew){
+              this.postData(this.employeeData);
+            }
+            else{
+              this.updateOverTime(this.employeeData.OverTimeId,this.employeeData);
+            }
+          // }
+        }, 0);
+      }
     },
 
      /**
@@ -994,6 +1209,7 @@ export default {
     clearSelectedEmployee(e){
       const index = this.employeeData.OvertimeEmployee.findIndex(element => element === e);
       this.employeeData.OvertimeEmployee.splice(index,1);
+      // this.employeeClone.splice(index,1);
     },
 
     /**

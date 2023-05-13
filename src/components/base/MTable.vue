@@ -8,7 +8,7 @@
     :show-borders="true"
     :hover-state-enabled="true"
     :allow-column-resizing="true"
-    :noDataText="placeholderInput.noData"
+    :noDataText="$t('placeholderInput.noData')"
     column-resizing-mode="widget"
     column-min-width="50"
     column-max-width="200"
@@ -27,8 +27,20 @@
       :format="item.format"
       :width="item.width"
       :cell-template="item.cellTemplate"
+      header-cell-template="cell-header"
       :allow-selection="item.allowSelection"
-    />
+      :fixed=" item.fixed?item.fixed:isColumnPinArray[index]"
+      :fixed-position="item.fixedPosition?item.fixedPosition:''"
+    ></DxColumn>
+    <template
+    #cell-header="{data}">
+      <header-cell 
+      :cellData="data"
+      :isPinProp="getPinProps(data)"
+      @pin-column="pinColumn"
+      ></header-cell>
+    </template>
+
     <template #cell-avatar-name="{data}">
       <div style="display: flex; align-items: center;">
         <m-avatar :name="data.value" :tableStyle="true"></m-avatar>
@@ -38,14 +50,17 @@
     <template #cell-status="{data}">
       <status-cell :cellData="data"></status-cell>
     </template>
+
     <DxColumn
     v-if="modeProp == formMode.fix || modeProp == formMode.addNew"
-      caption="Chức năng"
+      caption=""
       alignment="center"
       cell-template="cell-template"
       :allow-selection="false"
-    />
+      :width="150"
+    ></DxColumn>
     <template #cell-template>
+    <div class="funtion-row">
       <DxButton
         v-if="!dataSubTable"
         id="edit"
@@ -70,8 +85,8 @@
         visible="true"
         @click="clearEmployee($event)"
       />
+    </div>
     </template>
-    />
     <DxPaging :enabled="false" />
     <DxSelection
       v-if="modeProp==formMode.detail?false:true"
@@ -79,7 +94,7 @@
       select-all-mode="page"
       show-check-boxes-mode="always"
       :width="50"
-    />
+    ></DxSelection>
   </DxDataGrid>
 </template>
 
@@ -92,7 +107,7 @@ import {
   DxEditing
 } from "devextreme-vue/data-grid";
 import { tableTitle,placeholderInput } from "@/js/resource.js";
-import { formMode } from "@/js/enum.js";
+import { formMode, numberPinCulumn } from "@/js/enum.js";
 import { DxButton } from "devextreme-vue/button";
 import { DxTooltip } from 'devextreme-vue/tooltip';
 import MAvatar from './MAvatar.vue';
@@ -134,7 +149,9 @@ export default {
       isFixedButton:false,
       selectedRowKeys:[],
       changePageData: false,
-      isClearEmployee:false
+      isClearEmployee:false,
+      isColumnPinArray: [],
+      isShowPinIcon: [],
     };
   },
   watch:{
@@ -142,7 +159,7 @@ export default {
       handler() {
         // const tableRef = this.$refs.table;
         // console.log(tableRef);
-        console.log(this.dataTitle);
+        // console.log(this.dataTitle);
         
         // tableRef.refresh();
       },
@@ -248,9 +265,67 @@ export default {
       immmediate: true
     }
   },
+  created() {
+    this.isColumnPinArray = new Array(numberPinCulumn).fill(false);
+    this.isShowPinIcon = new Array(numberPinCulumn).fill(false);
+    this.isColumnPinArray[0] = this.isColumnPinArray[1] = true;
+    this.isShowPinIcon[1]=true
+  },
   methods: {
     /**
+     * Nhấn ghim cột hoặc bỏ ghim
+     * author: VietDV(7/5/2023)
+     * @param {*} pinColumnObject 
+     */
+    pinColumn(pinColumnObject){
+      this.$emit("showLoading")
+      if (pinColumnObject.showPin) {
+        console.log(this.isColumnPinArray.lastIndexOf(true));
+        this.isColumnPinArray.forEach((ele, index) => {
+          if(pinColumnObject.index < this.isColumnPinArray.lastIndexOf(true)){
+            if (index <= pinColumnObject.index + 1) {
+              this.isColumnPinArray[index] = true;
+            } else {
+              this.isColumnPinArray[index] = false;
+            }
+          }
+          else{
+            if (index <= pinColumnObject.index) {
+              this.isColumnPinArray[index] = true;
+            } else {
+              this.isColumnPinArray[index] = false;
+            }
+          }
+        });
+
+        const lastIndex = this.isColumnPinArray.findIndex(
+          (ele, index) => ele === true && !this.isColumnPinArray[index + 1]
+        );
+        this.isShowPinIcon = new Array(numberPinCulumn).fill(false);
+        this.isShowPinIcon[lastIndex] = true;
+      } else {
+        this.isColumnPinArray = new Array(numberPinCulumn).fill(false);
+        this.isShowPinIcon = new Array(numberPinCulumn).fill(false);
+      }
+      this.$emit("hideLoading")
+    },
+
+    /**
+     * cập nhật các hàng được ghim khi đổi trang
+     * author: VietDV(7/5/2023)
+     * @param {*} data 
+     */
+    getPinProps(data) {
+      const idx = this.dataTitle?.findIndex(
+        (ele) => ele.dataField === data.column.dataField
+      );
+      if (this.isShowPinIcon[idx] === true) {
+        return true;
+      } else return false;
+    },
+    /**
      * Emit yêu cầu lên EmployeeList để xử lý
+     * author: VietDV(29/4/2023)
      * @param {*} e
      */
     emitRequest(e) {

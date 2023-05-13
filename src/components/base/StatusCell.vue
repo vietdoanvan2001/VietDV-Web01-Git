@@ -14,6 +14,11 @@ export default {
     },
   },
   methods: {
+    /**
+     * Xác định trạng thái để đổi css
+     * author: VietDV(5/5/2023)
+     * @param {*} value 
+     */
     className(value) {
       if (value === status.deny) {
         return "status-denined";

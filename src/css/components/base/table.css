@@ -10,7 +10,7 @@
 }
 
 #app > div.content > div > div.content__body > div.table__container > div > div > div.dx-datagrid-headers.dx-datagrid-nowrap > div > table > tbody{
-    background-color: #f5f5f5;
+    /* background-color: #f5f5f5; */
 }
 
 .dx-datagrid .dx-row > td{
@@ -69,7 +69,7 @@
 }
 
 .dx-datagrid-nowrap, .dx-datagrid-nowrap .dx-header-row>td>.dx-datagrid-text-content{
-    white-space: normal !important;
+    /* white-space: normal !important; */
 }
 
 #app > div.content > div > div.content__body > div.table__container > div > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div > div > div.dx-scrollable-content > div > table > tbody > tr.dx-row.dx-data-row.dx-column-lines.dx-state-hover{
@@ -200,3 +200,16 @@
     opacity: 0 !important;
     width: 0 !important;
 } */
+
+.funtion-row{
+    display: none !important;
+    background-color: transparent !important;
+    position: absolute;
+    margin-top: -22px;
+    right: 16px;
+}
+
+
+.dx-state-hover .funtion-row{
+    display: table-cell !important;
+}

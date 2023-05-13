@@ -2,7 +2,7 @@
   <m-loading v-if="isShowLoading"></m-loading>
   <div class="container">
     <div class="content__header">
-      <div class="content__header--left">{{ contentTitle.title }}</div>
+      <div class="content__header--left">{{ $t('contentTitle.title') }}</div>
       <div class="content__header--right">
         <DxButton type="default" class="content__icon-button">
           <DxButton
@@ -10,14 +10,13 @@
             :width="93"
             icon="add"
             type="success"
-            :text="textButton.iconButton"
+            :text="$t('textButton.iconButton')"
             @click="showDetail(formMode.addNew)"
           />
           <DxButton
             class="content__icon-button--right"
             id="back"
             icon="chevrondown"
-            @click="backClick()"
           />
         </DxButton>
       </div>
@@ -31,13 +30,13 @@
           <button class="ms-con-dropdown m-l-16">
             <div class="flex align-center m-r-48">
               <span class="content__status-selection--name">{{
-                contentFunctionName.status
+                $t('contentFunctionName.status')
               }}</span>
 
               <m-dropdown
                 :inputValue="statusSelection[0].value"
                 :dataSource="statusSelection"
-                :widthValue="112"
+                :widthValue="116"
                 @changeSelection="changeStatus"
               >
               </m-dropdown>
@@ -63,10 +62,10 @@
               show-event="mouseenter"
               hide-event="mouseleave"
             >
-              {{ titleIcon.refresh }}
+              {{ $t('titleIcon.refresh') }}
             </DxTooltip>
           </div>
-          <div class="content__function--icon mgr_8" id="filter">
+          <!-- <div class="content__function--icon mgr_8" id="filter">
             <div class="content__filter-icon"></div>
             <DxTooltip
               :hide-on-outside-click="false"
@@ -74,9 +73,9 @@
               show-event="mouseenter"
               hide-event="mouseleave"
             >
-              {{ titleIcon.filter }}
+              {{ $t('titleIcon.filter') }}
             </DxTooltip>
-          </div>
+          </div> -->
           <div class="content__function--icon mgr_8" id="export" @click="exportFilterData">
             <div class="content__export-icon"></div>
             <DxTooltip
@@ -85,7 +84,7 @@
               show-event="mouseenter"
               hide-event="mouseleave"
             >
-              {{ titleIcon.export }}
+              {{ $t('titleIcon.export') }}
             </DxTooltip>
           </div>
 
@@ -102,15 +101,15 @@
               <div class="setting-content--header">
                 <div class="setting-header__title">
                   <div class="setting-header__title--text">
-                    {{ contentTitle.changeRow }}
+                    {{ $t('contentTitle.changeRow') }}
                   </div>
                   <div class="close-button" @click="hideSettingPopup"></div>
                 </div>
-                <search-input
+                <!-- <search-input
                   @changeKeyWord="changeColumnKeyWord"
                   :widthValue="284"
                 >
-                </search-input>
+                </search-input> -->
               </div>
               <DxScrollView>
                 <DxSortable
@@ -139,13 +138,13 @@
               <div class="setting-header__footer">
                 <DxButton
                   class="m-sub-button w-90 mgr_8"
-                  :text="textButton.default"
+                  :text="$t('textButton.default')"
                   type="normal"
                   @click="resetColumn"
                 />
                 <DxButton
                   class="m-button w-90"
-                  :text="textButton.save"
+                  :text="$t('textButton.save')"
                   :use-submit-behavior="true"
                   @click="saveColumn"
                   type="normal"
@@ -158,7 +157,7 @@
               show-event="mouseenter"
               hide-event="mouseleave"
             >
-              {{ titleIcon.setting }}
+              {{ $t('titleIcon.setting') }}
             </DxTooltip>
           </div>
         </div>
@@ -166,15 +165,15 @@
       
       <div class="content__body--function option" v-if="selectedRecord.length">
         <div class="content__function--left">
-          <div>{{ textButton.selected }} <span style="font-weight: 600;">{{ selectedRecord.length }}</span></div>
-          <span style="padding-left: 8px; cursor: pointer; color: red; margin:0 24px;" @click="uncheckedSelectRows">{{ textButton.unchecked }}</span>
+          <div>{{ $t('textButton.selected') }} <span style="font-weight: 600;">{{selectedRecord.length }}</span></div>
+          <span style="padding-left: 8px; cursor: pointer; color: red; margin:0 24px;" @click="uncheckedSelectRows">{{ $t('textButton.unchecked') }}</span>
           <button class="denine-button" @click="changeMultipleStatus(status.deny)" v-if="showDenyButton"><i class="denine-icon"></i>
-            <span>{{ textButton.deny }}</span></button>
+            <span>{{ $t('textButton.deny') }}</span></button>
           <button class="approve-button" @click="changeMultipleStatus(status.accept)" v-if="showAcceptButton"><i
-              class="approve-icon"></i><span>{{ textButton.accept }}</span></button>
-          <button @click="exportSelectedData" class="export-button"><i class="export-icon"></i> <span>{{ textButton.export }}</span></button>
+              class="approve-icon"></i><span>{{ $t('textButton.accept') }}</span></button>
+          <button @click="exportSelectedData" class="export-button"><i class="export-icon"></i> <span>{{ $t('textButton.export') }}</span></button>
           <button class="delete-all-button" @click="multipleDelete"><i
-              class="delete-all-icon"></i><span>{{ textButton.delete }}</span></button>
+              class="delete-all-icon"></i><span>{{ $t('textButton.delete') }}</span></button>
           </div>
       </div>
 
@@ -185,6 +184,8 @@
           :selectedRowProps="selectedRecord"
           :changePage="params.offSet"
           :isUncheckedSelected="isUncheckedSelected"
+          @showLoading="showLoading"
+          @hideLoading="hideLoading"
           @showDetail="showDetail"
           @deleteOverTime="deleteOverTime"
           @addSelectedRecord="addSelectedRecord"
@@ -193,9 +194,9 @@
       </div>
       <m-paging
         class="list__paging"
-        :totalRecord="data.TotalRecord"
-        :beginRecord="data.Begin"
-        :endRecord="data.End"
+        :totalRecord="data?.TotalRecord"
+        :beginRecord="data?.Begin"
+        :endRecord="data?.End"
         :paramsWatched="params"
         @changePageSize="changePageSize"
         @changeOffSet="changeOffSet"
@@ -215,6 +216,7 @@
 
 <script>
 import {
+  dialogText,
   contentTitle,
   textButton,
   placeholderInput,
@@ -222,8 +224,10 @@ import {
   statusSelection,
   titleIcon,
   tableTitle,
-  dialogText
 } from "@/js/resource";
+
+import { Resource } from '@/js/language';
+
 import _ from "lodash";
 import {formMode, status} from '@/js/enum.js'
 import DxButton from "devextreme-vue/button";
@@ -260,9 +264,17 @@ export default {
     notify
   },
   created() {
+    console.log(this.dialogText);
     //tạo bản sao title
     this.tableTitleArange = []
-    this.tableTitleClone = JSON.parse(localStorage.getItem('tableTitle'));
+    if(this.$i18n.locale == "vi"){
+      this.tableTitleClone = JSON.parse(localStorage.getItem('tableTitle'));
+      // this.tableTitleClone = Resource.messages.vi.tableTitle;
+    }
+    else{
+      this.tableTitleClone = JSON.parse(localStorage.getItem('tableTitleEnglish'));
+      // this.tableTitleClone = Resource.messages.eng.tableTitle;
+    }
     this.tableTitleClone.forEach(element =>{
       if(element.isDisplay){
         this.tableTitleArange.push(element);
@@ -278,6 +290,31 @@ export default {
             immediate: true,
             deep: true,
         },
+        //theo dõi đổi ngôn ngữ
+        '$i18n.locale': {
+        handler() {
+          this.showLoading();
+          this.tableTitleArange = []
+          if(this.$i18n.locale == "vi"){
+            this.tableTitleClone = JSON.parse(localStorage.getItem('tableTitle'));
+            // this.tableTitleClone = Resource.messages.vi.tableTitle;
+            this.statusSelection = Resource.messages.vi.statusSelection;
+          }
+          else{
+            this.tableTitleClone = JSON.parse(localStorage.getItem('tableTitleEnglish'));
+            // this.tableTitleClone = Resource.messages.eng.tableTitle;
+            this.statusSelection = Resource.messages.eng.statusSelection;
+          }
+          this.tableTitleClone.forEach(element =>{
+            if(element.isDisplay){
+              this.tableTitleArange.push(element);
+            }
+          })
+          this.hideLoading();
+        },
+        deep: true,
+        immediate: true
+        }
     },
   data() {
     return {
@@ -285,13 +322,13 @@ export default {
       tableTitleArange:[],
       status:status,
       contentTitle: contentTitle,
-      textButton: textButton,
+      textButton: Resource.messages.eng.textButton,
       isChangePage: false,
-      toastStatus:toastStatus,
-      dialogText:dialogText,
+      toastStatus:Resource.messages.eng.toastStatus,
+      dialogText:Resource.messages.eng.dialogText,
       placeholderInput: placeholderInput,
       contentFunctionName: contentFunctionName,
-      statusSelection: statusSelection,
+      statusSelection: Resource.messages.vi.statusSelection,
       titleIcon:titleIcon,
       formMode:formMode,
       showForm: false,
@@ -348,7 +385,12 @@ export default {
           this.tableTitleArange.push(element)
         }
       })
-      localStorage.setItem('tableTitle', JSON.stringify(this.tableTitleClone));
+      if(this.$i18n.locale == "vi"){
+        localStorage.setItem('tableTitle', JSON.stringify(this.tableTitleClone));
+      }
+      else{
+        localStorage.setItem('tableTitleEnglish', JSON.stringify(this.tableTitleClone));
+      }
       this.isSettingVisible = false
     },
     
@@ -358,20 +400,48 @@ export default {
      */
     resetColumn(){
       this.tableTitleArange = []
-      this.tableTitleClone = lodash.cloneDeep(tableTitle);
+      // this.tableTitleClone = lodash.cloneDeep(tableTitle);
+      if(this.$i18n.locale == "vi"){
+        this.tableTitleClone = Resource.messages.vi.tableTitle;
+      }
+      else{
+        this.tableTitleClone = Resource.messages.eng.tableTitle;
+      }
       this.tableTitleClone.forEach(element =>{
         if(element.isDisplay){
           this.tableTitleArange.push(element);
         }
       })
-      localStorage.setItem('tableTitle', JSON.stringify(this.tableTitleClone));
+      if(this.$i18n.locale == "vi"){
+        localStorage.setItem('tableTitle', JSON.stringify(this.tableTitleClone));
+      }
+      else{
+        localStorage.setItem('tableTitleEnglish', JSON.stringify(this.tableTitleClone));
+      }
       this.isSettingVisible = false
     },
 
+    /**
+     * Xuất khẩu danh sách đơn làm thêm được chọn
+     * author: VietDV(5/5/2023)
+     */
     exportSelectedData: async function(){
       try {
+        // debugger
         this.showLoading();
-        const response = await exportSelectedData(this.selectedRecord); 
+        let listIDs = [];
+        this.selectedRecord.forEach(element => {
+          listIDs.push(element.OverTimeId);
+        })
+        var header = this.tableTitleArange.map(element => {
+            return {
+                alignment: element.alignment,
+                caption: element.caption,
+                dataField: element.dataField,
+                isDisplay: element.isDisplay
+            };
+        });
+        const response = await exportSelectedData(listIDs,header); 
         const url = URL.createObjectURL(
           new Blob([response.data],
           {type:"application/vnd.ms-excel"}) 
@@ -386,6 +456,9 @@ export default {
       } catch (error) {
         this.hideLoading();
         console.log(error);
+      }
+      finally{
+        this.selectedRecord = [];
       }
     },
 
@@ -403,7 +476,15 @@ export default {
           status: this.params.status,
           total: this.data.TotalRecord,
         }
-        const response = await exportFilterData(params); 
+        var header = this.tableTitleArange.map(element => {
+            return {
+                alignment: element.alignment,
+                caption: element.caption,
+                dataField: element.dataField,
+                isDisplay: element.isDisplay
+            };
+        });
+        const response = await exportFilterData(params,header); 
         const url = URL.createObjectURL(
           new Blob([response.data],
           {type:"application/vnd.ms-excel"}) 
@@ -751,7 +832,14 @@ export default {
               if (dialogResult.buttonText === textButton.accept || dialogResult.buttonText === textButton.deny) {
                 this.showLoading();
                 try {
-                 var listIDs = this.selectedRecord.map(element => element.OverTimeId);
+                  console.log(status);
+                var IDs=[]
+                this.selectedRecord.forEach(element =>{
+                  if(element.Status != status){
+                    IDs.push(element);
+                  }
+                })
+                var listIDs = IDs.map(element => element.OverTimeId);
                   const res = await changeMultiple(listIDs,status);
                   this.getOverTimeData();
                   //toast message TH duyệt

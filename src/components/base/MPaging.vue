@@ -1,6 +1,6 @@
 <template>
     <div class="page">
-        <div class="page-left">{{ pagingText.amount }} <span class="amount-page">{{ totalRecord }}</span></div>
+        <div class="page-left">{{ $t('pagingText.amount') }} <span class="amount-page">{{ totalRecord }}</span></div>
         <div class="page-right">
             <!-- <DxSelectBox 
                     class="status__combobox"
@@ -18,7 +18,7 @@
                 @changeSelection="changePageSize"
             >
             </m-dropdown>
-            <div class="page-range">{{ pagingText.from }}<span style="font-weight: 700;">{{ beginRecord }}</span> {{ pagingText.to }} <span style="font-weight: 700;">{{ endRecord }}</span> {{ pagingText.record }}</div>
+            <div class="page-range">{{ $t('pagingText.from') }}<span style="font-weight: 700;">{{ beginRecord }}</span> {{ $t('pagingText.to') }} <span style="font-weight: 700;">{{ endRecord }}</span> {{ $t('pagingText.record') }}</div>
             <div class="page-number">
                 <div>
                     <div :title=titleIcon.previos class="pre-button" id="previos" @click="previousPage" :class="canBack?'':'disable-button'"></div>

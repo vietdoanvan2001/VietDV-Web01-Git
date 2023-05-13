@@ -264,6 +264,7 @@ body > div.dx-overlay-wrapper.dx-popup-wrapper.dx-popover-wrapper.dx-popover-wit
 
 #app > div.content > div > div.content__body > div.content__body--function > div.content__function--right > div.content__department-selection.mgr_8 > div > div.dx-dropdowneditor-input-wrapper > div > div.dx-texteditor-input-container > input{
     padding-left: 8px;
+    cursor: pointer;
 }
 
 .denine-button {
@@ -390,3 +391,18 @@ body > div.dx-overlay-wrapper.dx-popup-wrapper.dx-popover-wrapper.dx-popover-wit
     height: 24px;
     background: url('../../assets/img/Icon.edb5c3d.svg') no-repeat -168px -24px;
   }
+
+  #app > div.content > div > div.content__body > div.table__container > div > div > div.dx-datagrid-rowsview.dx-datagrid-nowrap.dx-fixed-columns.dx-scrollable.dx-visibility-change-handler.dx-scrollable-both.dx-scrollable-simulated > div.dx-datagrid-content.dx-datagrid-content-fixed > table > tbody > tr{
+    height: 50px !important;
+  }
+
+.dx-treeview-toggle-item-visibility.dx-treeview-toggle-item-visibility-opened::before{
+  content: "\F001";
+  position: absolute;
+  display: block;
+  width: 22px;
+  top: 50%;
+  margin-top: -11px;
+  left: 50%;
+  margin-left: -11px;
+}

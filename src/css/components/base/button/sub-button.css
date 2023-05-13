@@ -1,25 +1,25 @@
 .m-sub-button{
-    width: 80px !important;
+    min-width: 80px !important;
     height: 36px !important;
     border-radius: 4px;
     padding: 0px 16px;
     min-width: 0px !important;
     background-color: #fff;
     color: #212121;
-    border: 1px solid #ddddeb;
+    border: 1px solid #e0e0e0 !important;
 }
 
 .m-sub-button:hover{
     background-color: #eae6ff;
     color: #1f1f23;
-    border: 1px solid #ddddeb;
+    border: 1px solid #e0e0e0 !important;
 }
 
 .m-sub-button:active,
 .m-sub-button:focus{
     background-color: #dedaf5;
     color: #1f1f23;
-    border: 1px solid #ddddeb;
+    border: 1px solid #e0e0e0 !important;
 }
 
 

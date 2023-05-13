@@ -186,7 +186,9 @@
   }
 
   .detail__list--body{
-    padding-top: 18px;
+    /* padding-top: 18px; */
+    max-height: 400px;
+    overflow: auto;
   }
 
   .list__button--icon{
@@ -454,4 +456,76 @@ input[type="checkbox"] {
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: -72px 0;
   margin-top: 4px;
+}
+
+#app > div.content > form > div > div.detail__content > div.detail__content--form > div.detail__form--body > div.detail__form--right > div > input{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#status__combobox--id > div > div > div.dx-texteditor-input-container.dx-tag-container{
+  max-height: 64px;
+    overflow-y: auto;
+}
+
+.detail-dialog__background{
+  width: 100%;
+    background: #000;
+    opacity: 0.4;
+    position: absolute;
+    z-index: 3000;
+    height: 100vh;
+    top: 0;
+}
+
+.detail-dialog{
+  width: 415px;
+  height: auto;
+  position: absolute;
+  z-index: 3001;
+  background: #fff;
+  top: 100px;
+  left: 50%;
+  border-radius: 4px;
+  transform: translate(-50%, 0);
+}
+
+.detail-dialog__header{
+  height: 53px;
+  padding: 24px 24px 0 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.detail-dialog__header--title{
+  letter-spacing: 0.576px;
+    font-size: 24px;
+    color: rgb(33, 33, 33);
+    font-weight: 700;
+}
+
+.detail-dialog__header--button{
+  width: 24px;
+  height: 24px;
+  margin: 6px;
+  background: url('../../assets/img/Icon.edb5c3d.svg') no-repeat -24px -48px;
+  cursor: pointer;
+}
+
+.detail-dialog__body{
+  padding: 24px;
+}
+
+.detail-dialog__footer{
+  height: 68px;
+  padding: 16px 24px;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dx-datebox-wrapper .dx-popup-bottom .dx-button{
+  height: 30px;
+  width: 100%;
+  color: #000;
 }

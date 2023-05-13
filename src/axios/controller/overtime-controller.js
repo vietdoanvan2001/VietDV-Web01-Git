@@ -63,7 +63,6 @@ export async function deleteEmoloyeeByID(entityId){
  * @returns 
  */
 export async function multipleDelete(params){
-    debugger
     let IDs = "(";
     for(let i = 0; i< params.length;i++){
         if(i<params.length-1){
@@ -105,14 +104,18 @@ export async function changeMultiple(params,status){
 }
 
 /**
- * Hàm call API xuất khẩu đơn đăng ký làm thêm theo id
+ * Hàm call API xuất khẩu đơn đăng ký làm thêm theo filter
  * author: VietDV(5/5/2023)
  * @param {*} params 
  * @returns 
  */
-export async function exportFilterData(params){
+export async function exportFilterData(params,listTableTitle){
     const endpoint = endPoint.OVERTIMES_EXPORT;
-    return await axios.getAxiosBlob(endpoint,params)
+    let body = {
+        param: params,
+        header: listTableTitle
+    }
+    return await axios.postAxiosBlob(endpoint,body)
 }
 
 /**
@@ -121,11 +124,20 @@ export async function exportFilterData(params){
  * @param {*} params 
  * @returns 
  */
-export async function exportSelectedData(body){
-    debugger
-    let param = {
-        listOverTime: body
+export async function exportSelectedData(listID,listTableTitle){
+    // debugger
+    let IDs = "(";
+    for(let i = 0; i< listID.length;i++){
+        if(i<listID.length-1){
+            IDs = IDs + "'" + listID[i] + "',"
+        }
+        else{
+            IDs = IDs + "'" + listID[i] + "')"
+        }
     }
+    let params = {listID : IDs,
+        header: listTableTitle}
     const endpoint = endPoint.OVERTIMES_SELECTED_EXPORT;
-    return await axios.getBodyAxiosBlob(endpoint,param)
+
+    return await axios.postAxiosBlob(endpoint,params)
 }

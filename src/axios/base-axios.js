@@ -38,23 +38,24 @@ export const getAxios = async(endpoint,query) => {
   });
 };
 
-/**
- * Hàm base axios xử lí get request blob
- * author: VietDV(27/3/2023)
- * @param {*} endpoint 
- * @param {*} query 
- * @returns 
- */
-export const getBodyAxiosBlob = async (endpoint, query) => {
-    debugger
-    return await HTTP.post(
-        endpoint,{
-            params: {
-                ...query
-            }
-        }
-      );
-  };
+// /**
+//  * Hàm base axios xử lí get request blob
+//  * author: VietDV(27/3/2023)
+//  * @param {*} endpoint 
+//  * @param {*} query 
+//  * @returns 
+//  */
+// export const getMultipleAxiosBlob = async (endpoint, query) => {
+//     debugger
+//     return await HTTP.get(
+//         endpoint,{
+//             params: {
+//                 ...query,
+//               },
+//             responseType: 'blob'
+//         }
+//       );
+//   };
 
 /**
  * Hàm base axios xử lí post request
@@ -68,7 +69,20 @@ export const postAxios = async(endpoint,body) => {
         ...body
     })
 } 
-
+/**
+ * Hàm base axios xử lí post blob request
+ * author: VietDV(5/5/2023)
+ * @param {*} endpoint 
+ * @param {*} body 
+ * @returns 
+ */
+export const postAxiosBlob = async(endpoint,body) => {
+    return await HTTP.post(
+        endpoint,
+        body,
+        {responseType: "blob"}
+    )
+} 
 /**
  * Hàm base axios xử lý put request
  * author: VietDV(25/2/2023)
@@ -105,7 +119,6 @@ export const deleteAxios = async(endpoint,query) => {
  * @returns 
  */
 export const multipleDeleteAxios = async(endpoint,query) => {
-    debugger
     return await HTTP.delete(
         endpoint,{
             params: {
@@ -115,4 +128,5 @@ export const multipleDeleteAxios = async(endpoint,query) => {
       );
 } 
 
-export default {getAxios, postAxios, putAxios, deleteAxios, multipleDeleteAxios,getAxiosBlob, getBodyAxiosBlob}
+export default {
+    postAxiosBlob, getAxios, postAxios, putAxios, deleteAxios, multipleDeleteAxios,getAxiosBlob}

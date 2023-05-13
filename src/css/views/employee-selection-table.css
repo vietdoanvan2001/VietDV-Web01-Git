@@ -14,7 +14,7 @@
 .selection-table__content{
     margin: 10px;
     width: 900px;
-    height: 722px;
+    height: fit-content;
     background-color: #fff;
     border-radius: 4px;
     position: relative;
@@ -151,7 +151,7 @@
 }
 
 #app > div.content > div.table__layer > div > div.selection-table__body > div.selection-table__body--content > div.dx-widget.dx-visibility-change-handler > div > div.dx-datagrid-headers.dx-datagrid-nowrap > div{
-    background-color: #f5f5f5;
+    /* background-color: #f5f5f5; */
 }
 
 #app > div.content > div.table__layer > div > div.selection-table__body > div.selection-table__body--filter > div.dx-show-invalid-badge.dx-dropdownbox.dx-textbox.dx-texteditor.dx-show-clear-button.dx-dropdowneditor-button-visible.dx-editor-outlined.dx-widget.dx-dropdowneditor.dx-dropdowneditor-field-clickable > div.dx-dropdowneditor-input-wrapper > div > div.dx-texteditor-input-container > input,

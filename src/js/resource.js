@@ -322,7 +322,7 @@ export const tableTitle = [
       dataField : "ApplyDate",
       caption : "Ngày nộp đơn",
       dataType : "date",
-      format: "dd-MM-yyyy HH:mm",
+      format: "dd/MM/yyyy HH:mm",
       alignment : "center",
       width : "150",
       isDisplay: true,
@@ -331,7 +331,7 @@ export const tableTitle = [
         dataField : "FromDate",
         caption : "Làm thêm từ",
         dataType : "date",
-        format: "dd-MM-yyyy HH:mm",
+        format: "dd/MM/yyyy HH:mm",
         alignment : "center",
         width : "150",
         isDisplay: true,
@@ -340,7 +340,7 @@ export const tableTitle = [
       dataField : "ToDate",
       caption : "Làm thêm đến",
       dataType : "date",
-      format: "dd-MM-yyyy HH:mm",
+      format: "dd/MM/yyyy HH:mm",
       alignment : "center",
       width : "150",
       isDisplay: true,
@@ -349,7 +349,7 @@ export const tableTitle = [
         dataField : "BreakTimeFrom",
         caption : "Nghỉ giữa ca từ",
         dataType : "date",
-        format: "dd-MM-yyyy HH:mm",
+        format: "dd/MM/yyyy HH:mm",
         alignment : "center",
         width : "150",
         isDisplay: true,
@@ -358,7 +358,7 @@ export const tableTitle = [
         dataField : "BreakTimeTo",
         caption : "Nghỉ giữa ca đến",
         dataType : "date",
-        format: "dd-MM-yyyy HH:mm",
+        format: "dd/MM/yyyy HH:mm",
         alignment : "center",
         width : "150",
         isDisplay: true,
@@ -422,13 +422,14 @@ export const tableTitle = [
       cellTemplate: "cell-status"
     },
     {
-        caption : "Chức năng",
+        // caption : "Chức năng",
         cellTemplate: "cell-template",
         alignment : "center",
         width : "120",
         allowSelection: false,
-        fixed: true,
-        fixedPosition:"right",
+        // fixed: true,
+        // fixedPosition:"right",
+        isDisplay: true,
         class:"function-row"
       }
 ]
@@ -500,5 +501,7 @@ export const detailField = {
 //Các thông báo lỗi validate
 export const validateMessage = {
     required: "không được để trống.",
-    maxDate: "không được lớn hơn ngày hiện tại."
+    min:"phải lớn hơn",
 }
+
+export const languageSwitch = 'Tiếng Việt'

@@ -13,8 +13,12 @@
 <script>
 export default {
     props:{
+        //Dữ liệu nhân viên
         data:Object
-    }
+    },
+    created() {
+        // console.log(this.data);
+    },
 }
 </script>
 

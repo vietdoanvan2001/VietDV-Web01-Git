@@ -22,6 +22,11 @@ export default {
         };
     },
     methods: {
+      /**
+       * Chuyển tên về dạng chữ viết tắt tên
+       * author VietDV(5/5/2023)
+       * @param {*} name 
+       */
         formatName(name){
             let array = name.toString().trim().split(" ");
             let length = array.length - 1;

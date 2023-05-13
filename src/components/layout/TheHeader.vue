@@ -5,7 +5,7 @@
                 <div class="box-app-menu"></div>
             </div>
             <div class="header__icon"></div>
-            <div class="header__name">{{ appName }}</div>
+            <div class="header__name">{{ $t('appName') }}</div>
         </div>
         <div class="header__right">
             <div class="heaeder__right--menu"
@@ -20,7 +20,7 @@
                             :style="item.isActive?'font-weight : 600':''"
                             @click="showOption(index)"
                         >
-                            {{ item.name }}
+                            {{ $t(item.name) }}
                         </div>
                         <div class="border__active--hidden" :class="item.isActive?'border__active':''" ></div>
                     </div>
@@ -55,7 +55,7 @@
                         show-event="mouseenter"
                         hide-event="mouseleave"
                     >
-                        {{ titleIcon.notification }}
+                        {{ $t('titleIcon.notification') }}
                     </DxTooltip>
                 </div>
                 <div class="header__right--icon mgr_8" id="product2">
@@ -66,7 +66,7 @@
                         show-event="mouseenter"
                         hide-event="mouseleave"
                     >
-                        {{ titleIcon.help }}
+                        {{ $t('titleIcon.help') }}
                     </DxTooltip>
                 </div>
                 <div class="header__right--icon mgr_8" id="product3">
@@ -77,7 +77,7 @@
                         show-event="mouseenter"
                         hide-event="mouseleave"
                     >
-                        {{ titleIcon.other }}
+                        {{ $t('titleIcon.other') }}
                     </DxTooltip>
                 </div>
                 <div class="header__right--icon mgr_24" id="product4">
@@ -88,10 +88,65 @@
                         show-event="mouseenter"
                         hide-event="mouseleave"
                     >
-                        {{ titleIcon.knowledge }}
+                        {{ $t('titleIcon.knowledge') }}
                     </DxTooltip>
                 </div>
-                <div class="header__right--avatar">ĐV</div>
+                <div class="header__right--avatar"
+                @click="togleAvatarSelection"
+                >ĐV</div>
+                <div class="avatar-option" 
+                v-click-away="closeAvatarSelection"
+                v-if="isShowAvatarSelection" >
+                    <div class="avatar-option__body">
+                        <div class="avatar-option__icon">ĐV</div>
+                        <div class="avatar-option__name">Đoàn Văn Việt</div>
+                        <div class="avatar-option__email">vietdoan@gmail.com</div>
+                        <div style="width: 100%; padding: 0 8px; border: 1px solid #e0e0e0;border-radius: 4px;">
+                            <div class="avatar-option__department">Công ty cổ phần MISA</div>
+                        </div>
+                        <div class="avatar-option__item">
+                            <i class="avatar-item__icon key"></i>
+                            {{ $t('avatar.changePass') }}
+                        </div>
+                        <div class="avatar-option__item">
+                            <i class="avatar-item__icon account"></i>
+                            {{ $t('avatar.accountSetting') }}</div>
+                        <div class="avatar-option__item">
+                            <i class="avatar-item__icon security"></i>
+                            {{ $t('avatar.securitySetting') }}</div>
+                        <div class="avatar-option__item">
+                            <i class="avatar-item__icon gift"></i>
+                            {{ $t('avatar.getPoint') }}</div>
+                        <div class="avatar-option__item item__languge" 
+                        @click="toggleLanguageSelection"
+                        >
+                            <i v-if="isVietnamese" class="avatar-item__icon vietnam"></i>
+                            <i v-if="!isVietnamese" class="avatar-item__icon england"></i>
+                            {{ $t('avatar.language') }} {{ $t('languageSwitch') }}
+                            <div class="avatar-item__icon--dropdown"></div>
+                            <div class="language-selection" 
+                            v-if="isShowSelection"
+                            v-click-away="closeLanguageSelection"
+                            >
+                                <div class="language-selection__item"
+                                @click="setVietnamese"
+                                :style="isVietnamese?'background:#ffede2; color: #ec5504;':''"
+                                >
+                                    <i class="avatar-item__icon vietnam"></i>
+                                    Việt Nam</div>
+                                <div class="language-selection__item"
+                                @click="setEnglish"
+                                :style="!isVietnamese?'background:#ffede2; color: #ec5504;':''"
+                                >
+                                    <i class="avatar-item__icon england"></i>
+                                    English</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="avatar-option__footer">
+                        <i class="avatar-item__icon logout"></i>
+                        {{ $t('avatar.logout') }}</div>
+                </div>
             </div>
         </div>
     </div>
@@ -100,25 +155,96 @@
 <script>
 import {
     appName,
-    headerMenu,
     optionHeader,
+    headerMenu,
     titleIcon
 } from '@/js/resource'
+
+import { Resource } from '@/js/language';
+
 import { DxTooltip } from 'devextreme-vue/tooltip';
 export default {
     components:{
         DxTooltip
     },
+    watch:{
+        //Xác định ngôn ngữ
+        '$i18n.locale': {
+        handler() {
+           if(this.$i18n.locale == "vi"){
+               this.headerMenu = Resource.messages.vi.headerMenu
+           }else{
+                this.headerMenu = Resource.messages.eng.headerMenu
+           }
+        },
+        deep: true,
+        immediate: true
+        }
+    },
     data() {
         return {
             appName: appName,
-            headerMenu:headerMenu,
+            headerMenu:Resource.messages.vi.headerMenu,
             optionHeader:optionHeader,
             titleIcon:titleIcon,
-            isShowOption: []
+            isShowOption: [],
+            isShowSelection: false,
+            isShowAvatarSelection: false,
+            isVietnamese:true
         }
     },
     methods: {
+        /**
+         * Chuyển sang ngôn ngữ tiếng anh
+         * author: VietDV(9/5/2023)
+         */
+        setVietnamese(){
+            this.isVietnamese = true
+            localStorage.setItem('language', "vi");
+            this.$i18n.locale = localStorage.getItem('language')
+        },
+
+        /**
+         * Chuyển sang ngôn ngữ tiếng anh
+         * author: VietDV(9/5/2023)
+         */
+        setEnglish(){
+            this.isVietnamese = false
+            localStorage.setItem('language', "eng");
+            this.$i18n.locale = localStorage.getItem('language')
+        },
+
+        /**
+         * Ẩn hiện avatar selection
+         * author: VietDV(9/5/2023)
+         */
+        togleAvatarSelection(){
+            this.isShowAvatarSelection = !this.isShowAvatarSelection
+        },
+
+        /**
+         * Ẩn avatar selection
+         * author: VietDV(9/5/2023)
+         */
+        closeAvatarSelection(){
+            this.isShowAvatarSelection = false
+        },
+
+        /**
+         * Ẩn Hiện chọn ngôn ngữ
+         * author: VietDV(9/5/2023)
+         */
+        toggleLanguageSelection(){
+            this.isShowSelection = !this.isShowSelection
+        },
+
+        /**
+         * Ẩn chọn ngôn ngữ
+         * author: VietDV(9/5/2023)
+         */
+        closeLanguageSelection(){
+            this.isShowSelection = false
+        },
         /**
          * Hiển thị các lựa chọn của danh mục được click trên menu
          * author: VietDV(14/4/2023)

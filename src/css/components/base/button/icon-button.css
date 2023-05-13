@@ -11,6 +11,15 @@
     background-color: #ec5504;
 }
 
+#app > div.content > div > div.content__header > div.content__header--right > div > div > div.dx-widget.dx-button.dx-button-mode-contained.dx-button-success.dx-button-has-text.dx-button-has-icon.content__icon-button--left:hover{
+    background-color: #fa6000;
+    border: 1px solid #fa6000;
+}
+
+#app > div.content > div > div.content__header > div.content__header--right > div > div > div.dx-widget.dx-button.dx-button-mode-contained.dx-button-success.dx-button-has-text.dx-button-has-icon.content__icon-button--left:active{
+    background-color: #e35102;
+}
+
 #app > div.content > div > div.content__header > div.content__header--right > div > div{
     border-radius: 4px;
 }

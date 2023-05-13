@@ -1,7 +1,7 @@
 <template>
   <DxTextBox
         class="content__search-input mgr_8"
-        :placeholder="placeholderInput.searchInput"
+        :placeholder="$t('placeholderInput.searchInput')"
         :width="widthValue"
         :height="36"
         @value-changed="changeKeyWord($event)"
